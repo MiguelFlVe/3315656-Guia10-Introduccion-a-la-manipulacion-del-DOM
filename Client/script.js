@@ -6,8 +6,9 @@
  * Objetivo: Aplicar conceptos del DOM para seleccionar elementos,
  * responder a eventos y crear nuevos elementos dinámicamente.
  * 
- * Autor: [Tu nombre aquí]
- * Fecha: [Fecha actual]
+ * Autor 1: [Miguel Flórez]
+ * Autor 2: [Óscar Solano]
+ * Fecha: [6/05/2026]
  * ============================================
  */
 
@@ -57,7 +58,7 @@ let totalMessages = 0;
  * @returns {boolean} - true si es válido, false si no lo es
  */
 function isValidInput(value) {
-    // TODO: Implementar validación
+    // TODO1: Implementar validación
     // Pista: usa trim() para eliminar espacios al inicio y final
     // Retorna true si después de trim() el string tiene longitud > 0
 }
@@ -68,7 +69,7 @@ function isValidInput(value) {
  * @param {string} message - Mensaje de error a mostrar
  */
 function showError(errorElement, message) {
-    // TODO: Implementar función para mostrar error
+    // TODO2: Implementar función para mostrar error
     // Pista: asigna el mensaje al textContent del elemento
 }
 
@@ -77,7 +78,7 @@ function showError(errorElement, message) {
  * @param {HTMLElement} errorElement - Elemento del que limpiar el error
  */
 function clearError(errorElement) {
-    // TODO: Implementar función para limpiar error
+    // TODO3: Implementar función para limpiar error
     // Pista: asigna un string vacío al textContent
 }
 
@@ -86,7 +87,7 @@ function clearError(errorElement) {
  * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
  */
 function validateForm() {
-    // TODO: Implementar validación completa del formulario
+    // TODO4: Implementar validación completa del formulario
     // 1. Obtener los valores de los inputs usando .value
     // 2. Crear una variable para saber si el formulario es válido (inicialmente true)
     // 3. Validar el campo de nombre de usuario
@@ -141,7 +142,7 @@ function getCurrentTimestamp() {
  * @returns {string} - Iniciales en mayúsculas
  */
 function getInitials(name) {
-    // TODO: Implementar función para obtener iniciales
+    // TODO5: Implementar función para obtener iniciales
     // Pista: 
     // 1. Separar el nombre por espacios usando split(' ')
     // 2. Tomar la primera letra de cada palabra
@@ -153,7 +154,7 @@ function getInitials(name) {
  * Actualiza el contador de mensajes
  */
 function updateMessageCount() {
-    // TODO: Implementar actualización del contador
+    // TODO6: Implementar actualización del contador
     // Pista: Usa template literals para crear el texto
     // Formato: "X mensaje(s)" o "X mensajes"
 }
@@ -162,7 +163,7 @@ function updateMessageCount() {
  * Oculta el estado vacío (mensaje cuando no hay mensajes)
  */
 function hideEmptyState() {
-    // TODO: Implementar función para ocultar el estado vacío
+    // TODO7: Implementar función para ocultar el estado vacío
     // Pista: Agrega la clase 'hidden' al elemento emptyState
 }
 
@@ -170,7 +171,7 @@ function hideEmptyState() {
  * Muestra el estado vacío (mensaje cuando no hay mensajes)
  */
 function showEmptyState() {
-    // TODO: Implementar función para mostrar el estado vacío
+    // TODO8: Implementar función para mostrar el estado vacío
     // Pista: Remueve la clase 'hidden' del elemento emptyState
 }
 
@@ -185,7 +186,7 @@ function showEmptyState() {
  * @param {string} message - Contenido del mensaje
  */
 function createMessageElement(userName, message) {
-    // TODO: Implementar la creación de un nuevo mensaje
+    // TODO9: Implementar la creación de un nuevo mensaje
     
     // PASO 1: Crear el contenedor principal del mensaje
     // Pista: document.createElement('div')
@@ -225,7 +226,7 @@ function createMessageElement(userName, message) {
  * @param {Event} event - Evento del formulario
  */
 function handleFormSubmit(event) {
-    // TODO: Implementar el manejador del evento submit
+    // TODO10: Implementar el manejador del evento submit
     
     // PASO 1: Prevenir el comportamiento por defecto del formulario
     // Pista: event.preventDefault()
@@ -251,7 +252,7 @@ function handleFormSubmit(event) {
  * Limpia los errores cuando el usuario empieza a escribir
  */
 function handleInputChange() {
-    // TODO: Implementar limpieza de errores al escribir
+    // TODO11: Implementar limpieza de errores al escribir
     // Esta función se ejecuta cuando el usuario escribe en un campo
     // Debe limpiar el error de ese campo específico
 }
@@ -265,10 +266,10 @@ function handleInputChange() {
  * Aquí registramos todos los event listeners
  */
 
-// TODO: Registrar el evento 'submit' en el formulario
+// TODO12: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
 
-// TODO: Registrar eventos 'input' en los campos para limpiar errores al escribir
+// TODO13: Registrar eventos 'input' en los campos para limpiar errores al escribir
 // Pista: userNameInput.addEventListener('input', handleInputChange);
 // Pista: userMessageInput.addEventListener('input', handleInputChange);
 
