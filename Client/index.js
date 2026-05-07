@@ -1,1 +1,1 @@
-export { isValidInput } from './Transferencia/Todo 1.js';
+export { isValidInput } from "./Transferencia/Todo 1.js";
