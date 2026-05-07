@@ -68,10 +68,10 @@ function isValidInput(value) {
  * @param {HTMLElement} errorElement - Elemento donde mostrar el error
  * @param {string} message - Mensaje de error a mostrar
  */
-function showError(errorElement, message) {
+    import { showError } from "./Transferencia/Todo 2";
     // TODO2: Implementar función para mostrar error
     // Pista: asigna el mensaje al textContent del elemento
-}
+
 
 /**
  * Limpia el mensaje de error de un elemento específico

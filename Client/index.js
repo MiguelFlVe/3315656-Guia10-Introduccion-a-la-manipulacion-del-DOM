@@ -1,0 +1,1 @@
+export { showError } from "./Transferencia/Todo 2.js";
