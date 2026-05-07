@@ -76,27 +76,27 @@ function showError(errorElement, message) {
  * Limpia el mensaje de error de un elemento específico
  * @param {HTMLElement} errorElement - Elemento del que limpiar el error
  */
-import { clearError } from "./index.js";
-// TODO3: Implementar función para limpiar error
-// Pista: asigna un string vacío al textContent
-
+function clearError(errorElement) {
+    // TODO3: Implementar función para limpiar error
+    // Pista: asigna un string vacío al textContent
+}
 /**
  * Valida todos los campos del formulario
  * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
  */
-function validateForm() {
-    // TODO4: Implementar validación completa del formulario
-    // 1. Obtener los valores de los inputs usando .value
-    // 2. Crear una variable para saber si el formulario es válido (inicialmente true)
-    // 3. Validar el campo de nombre de usuario
-    //    - Si no es válido, mostrar error y cambiar la variable a false
-    //    - Si es válido, limpiar el error
-    // 4. Validar el campo de mensaje
-    //    - Si no es válido, mostrar error y cambiar la variable a false
-    //    - Si es válido, limpiar el error
-    // 5. Retornar si el formulario es válido o no
-    // Ejemplo de estructura:
-    /*
+import { validateForm } from "./index.js";
+// TODO4: Implementar validación completa del formulario
+// 1. Obtener los valores de los inputs usando .value
+// 2. Crear una variable para saber si el formulario es válido (inicialmente true)
+// 3. Validar el campo de nombre de usuario
+//    - Si no es válido, mostrar error y cambiar la variable a false
+//    - Si es válido, limpiar el error
+// 4. Validar el campo de mensaje
+//    - Si no es válido, mostrar error y cambiar la variable a false
+//    - Si es válido, limpiar el error
+// 5. Retornar si el formulario es válido o no
+// Ejemplo de estructura:
+/*
     const userName = userNameInput.value;
     const userMessage = userMessageInput.value;
     let isValid = true;
@@ -115,7 +115,6 @@ function validateForm() {
     
     return isValid;
     */
-}
 
 /**
  * Obtiene la fecha y hora actual formateada
