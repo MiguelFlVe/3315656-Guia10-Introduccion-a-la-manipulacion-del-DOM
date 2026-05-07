@@ -1,1 +1,1 @@
-export { showError } from "./Transferencia/Todo 2.js";
+import { showError } from "./Transferencia/TODO2.js"; // TODO2: Implementar función para mostrar error
