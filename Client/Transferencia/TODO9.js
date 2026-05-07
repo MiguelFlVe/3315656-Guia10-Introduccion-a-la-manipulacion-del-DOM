@@ -66,4 +66,23 @@ const createMessageElement = (userName, message) => {
     }
 }
 
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ * 
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: El elemento div (contenedor principal del mensaje), con la clase 'message-card'. El elemento div (contenedor del header del mensaje), con la clase 'message-card__header'. El elemento div (contenedor del usuario), con la clase 'message-card__user'. El elemento div (avatar del usuario), con la clase 'message-card__avatar'. El elemento span (nombre del usuario), con la clase 'message-card__username'. El elemento span (timestamp del mensaje), con la clase 'message-card__timestamp'. El elemento div (contenido del mensaje), con la clase 'message-card__content'.
+ * 
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento 'submit' del formulario de envío de mensajes, que desencadena la función createMessageElement para crear y agregar un nuevo mensaje al contenedor de mensajes.
+ * 
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: Un nuevo elemento div con la clase 'message-card'.
+ * 
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: Se inserta dentro del contenedor de mensajes (messagesContainer).
+ * 
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Se agrega un nuevo mensaje al contenedor de mensajes y se actualiza el contador.
+ */
+
 export { createMessageElement };
