@@ -209,7 +209,8 @@ function showEmptyState() {
  * @param {string} userName - Nombre del usuario
  * @param {string} message - Contenido del mensaje
  */
-function createMessageElement(userName, message) {
+
+export { createMessageElement } from './index.js/TODO9.js';
     // TODO9: Implementar la creación de un nuevo mensaje
     
     // PASO 1: Crear el contenedor principal del mensaje
@@ -238,7 +239,6 @@ function createMessageElement(userName, message) {
     // PASO 5: Actualizar el contador visual
     
     // PASO 6: Ocultar el estado vacío si está visible
-}
 
 
 // ============================================
