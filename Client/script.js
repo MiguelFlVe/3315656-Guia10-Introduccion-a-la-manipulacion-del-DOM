@@ -137,14 +137,14 @@ function getCurrentTimestamp() {
  * @param {string} name - Nombre completo
  * @returns {string} - Iniciales en mayúsculas
  */
-function getInitials(name) {
+import { getInitials } from "./index.js";
     // TODO5: Implementar función para obtener iniciales
     // Pista:
     // 1. Separar el nombre por espacios usando split(' ')
     // 2. Tomar la primera letra de cada palabra
     // 3. Unirlas y convertirlas a mayúsculas
     // 4. Si solo hay una palabra, retornar las dos primeras letras
-}
+
 
 /**
  * Actualiza el contador de mensajes
