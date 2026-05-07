@@ -84,7 +84,7 @@ function clearError(errorElement) {
  * Valida todos los campos del formulario
  * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
  */
-import { validateForm } from "./index.js";
+function validateForm() { 
 // TODO4: Implementar validación completa del formulario
 // 1. Obtener los valores de los inputs usando .value
 // 2. Crear una variable para saber si el formulario es válido (inicialmente true)
@@ -115,7 +115,7 @@ import { validateForm } from "./index.js";
     
     return isValid;
     */
-
+}
 /**
  * Obtiene la fecha y hora actual formateada
  * @returns {string} - Fecha y hora en formato legible
