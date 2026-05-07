@@ -1,1 +1,2 @@
 import { showError } from "./Transferencia/TODO2.js"; // TODO2: Implementar función para mostrar error
+import { createMessageElement } from './TODO9.js'; // TODO9: Implementar la creación de un nuevo mensaje
