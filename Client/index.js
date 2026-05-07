@@ -1,1 +1,1 @@
-export { validateForm } from "./Transferencia/Todo 4.js";
+export { validateForm } from "./Transferencia/TODO4.js"; // TODO4: Implementar validación completa del formulario
