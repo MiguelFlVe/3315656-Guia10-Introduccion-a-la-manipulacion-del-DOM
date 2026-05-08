@@ -214,7 +214,7 @@ import { createMessageElement } from './index.js';
  * Maneja el evento de envío del formulario
  * @param {Event} event - Evento del formulario
  */
-function handleFormSubmit(event) {
+import { handleFormSubmit } from './index.js';
     // TODO10: Implementar el manejador del evento submit
     // PASO 1: Prevenir el comportamiento por defecto del formulario
     // Pista: event.preventDefault()
@@ -228,7 +228,6 @@ function handleFormSubmit(event) {
     // PASO 6: Limpiar los errores
     // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
     // Pista: userNameInput.focus()
-}
 
 /**
  * Limpia los errores cuando el usuario empieza a escribir
