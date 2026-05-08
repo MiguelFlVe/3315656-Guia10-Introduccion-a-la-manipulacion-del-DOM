@@ -1,0 +1,23 @@
+{
+  "name": "guia10",
+  "version": "1.0.0",
+  "description": "**Metodología:** *\"Del Requerimiento al Producto\"*",
+  "homepage": "https://github.com/MiguelFlVe/3315656-Guia10-Introduccion-a-la-manipulacion-del-DOM#readme",
+  "bugs": {
+    "url": "https://github.com/MiguelFlVe/3315656-Guia10-Introduccion-a-la-manipulacion-del-DOM/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MiguelFlVe/3315656-Guia10-Introduccion-a-la-manipulacion-del-DOM.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
