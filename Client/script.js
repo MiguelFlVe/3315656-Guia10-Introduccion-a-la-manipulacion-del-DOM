@@ -246,6 +246,27 @@ import { handleInputChange } from "./index.js";
 // TODO12: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
 
+messageForm.addEventListener('submit', handleFormSubmit);
+
+/**
+ * PREGUNTAS DE REFLEXIÓN TODO12:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se está seleccionando el formulario con id 'messageForm' para manejar su evento de envío.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento de envío del formulario (submit).
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: Se crea un nuevo elemento de mensaje.
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: El nuevo mensaje se inserta dentro del contenedor con id 'messagesContainer'.
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Cada vez que se envía el formulario, se agrega un nuevo mensaje al contenedor, se incrementa el contador de mensajes, y si era el primer mensaje, se oculta el estado vacío. Además, el formulario se limpia para permitir ingresar un nuevo mensaje.
+ */ 
+
 // TODO13: Registrar eventos 'input' en los campos para limpiar errores al escribir
 // Pista: userNameInput.addEventListener('input', handleInputChange);
 // Pista: userMessageInput.addEventListener('input', handleInputChange);
@@ -271,7 +292,7 @@ import { handleInputChange } from "./index.js";
  *
  * 5. ¿Qué ocurre en la página cada vez que repites la acción?
  *    R:
- */
+ */ 
 
 // ============================================
 // 7. INICIALIZACIÓN (OPCIONAL)
