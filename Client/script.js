@@ -2,10 +2,10 @@
  * ============================================
  * EJERCICIO DE MANIPULACIÓN DEL DOM
  * ============================================
- * 
+ *
  * Objetivo: Aplicar conceptos del DOM para seleccionar elementos,
  * responder a eventos y crear nuevos elementos dinámicamente.
- * 
+ *
  * Autor 1: [Miguel Flórez]
  * Autor 2: [Óscar Solano]
  * Fecha: [6/05/2026]
@@ -22,31 +22,30 @@
  */
 
 // Formulario
-const messageForm = document.getElementById('messageForm');
+const messageForm = document.getElementById("messageForm");
 
 // Campos de entrada
-const userNameInput = document.getElementById('userName');
-const userMessageInput = document.getElementById('userMessage');
+const userNameInput = document.getElementById("userName");
+const userMessageInput = document.getElementById("userMessage");
 
 // Botón de envío
-const submitBtn = document.getElementById('submitBtn');
+const submitBtn = document.getElementById("submitBtn");
 
 // Elementos para mostrar errores
-const userNameError = document.getElementById('userNameError');
-const userMessageError = document.getElementById('userMessageError');
+const userNameError = document.getElementById("userNameError");
+const userMessageError = document.getElementById("userMessageError");
 
 // Contenedor donde se mostrarán los mensajes
-const messagesContainer = document.getElementById('messagesContainer');
+const messagesContainer = document.getElementById("messagesContainer");
 
 // Estado vacío (mensaje que se muestra cuando no hay mensajes)
-const emptyState = document.getElementById('emptyState');
+const emptyState = document.getElementById("emptyState");
 
 // Contador de mensajes
-const messageCount = document.getElementById('messageCount');
+const messageCount = document.getElementById("messageCount");
 
 // Variable para llevar el conteo de mensajes
 let totalMessages = 0;
-
 
 // ============================================
 // 2. FUNCIONES AUXILIARES
@@ -57,13 +56,13 @@ let totalMessages = 0;
  * @param {string} value - El valor a validar
  * @returns {boolean} - true si es válido, false si no lo es
  */
-function isValidInput(value) {
+import { isValidInput } from './index.js';
     // TODO1: Implementar validación
     // Pista: usa trim() para eliminar espacios al inicio y final
     // Retorna true si después de trim() el string tiene longitud > 0
-}
 
-/**
+    
+ /**
  * Muestra un mensaje de error en un elemento específico
  * @param {HTMLElement} errorElement - Elemento donde mostrar el error
  * @param {string} message - Mensaje de error a mostrar
@@ -77,10 +76,9 @@ import { showError } from "./index.js/TODO2.js";
  * @param {HTMLElement} errorElement - Elemento del que limpiar el error
  */
 
-function clearError(errorElement) {
-    // TODO3: Implementar función para limpiar error
-    // Pista: asigna un string vacío al textContent
-}
+import { clearError } from "./index.js";
+// TODO3: Implementar función para limpiar error
+// Pista: asigna un string vacío al textContent
 
 /**
  * Valida todos los campos del formulario
@@ -97,7 +95,6 @@ function validateForm() {
     //    - Si no es válido, mostrar error y cambiar la variable a false
     //    - Si es válido, limpiar el error
     // 5. Retornar si el formulario es válido o no
-    
     // Ejemplo de estructura:
     /*
     const userName = userNameInput.value;
@@ -126,14 +123,14 @@ function validateForm() {
  */
 function getCurrentTimestamp() {
     const now = new Date();
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+    const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
     };
-    return now.toLocaleDateString('es-ES', options);
+    return now.toLocaleDateString("es-ES", options);
 }
 
 /**
@@ -143,7 +140,7 @@ function getCurrentTimestamp() {
  */
 function getInitials(name) {
     // TODO5: Implementar función para obtener iniciales
-    // Pista: 
+    // Pista:
     // 1. Separar el nombre por espacios usando split(' ')
     // 2. Tomar la primera letra de cada palabra
     // 3. Unirlas y convertirlas a mayúsculas
@@ -175,7 +172,6 @@ function showEmptyState() {
     // Pista: Remueve la clase 'hidden' del elemento emptyState
 }
 
-
 // ============================================
 // 3. CREACIÓN DE ELEMENTOS
 // ============================================
@@ -186,13 +182,11 @@ function showEmptyState() {
  * @param {string} message - Contenido del mensaje
  */
 
-export { createMessageElement } from './index.js/TODO9.js';
+import { createMessageElement } from './index.js';
     // TODO9: Implementar la creación de un nuevo mensaje
-    
     // PASO 1: Crear el contenedor principal del mensaje
     // Pista: document.createElement('div')
     // Asignar la clase 'message-card'
-    
     // PASO 2: Crear la estructura HTML del mensaje
     // Puedes usar innerHTML con la siguiente estructura:
     /*
@@ -205,17 +199,12 @@ export { createMessageElement } from './index.js/TODO9.js';
     </div>
     <div class="message-card__content">[MENSAJE]</div>
     */
-    
     // PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
     // Pista: messagesContainer.appendChild(nuevoElemento)
     // O usar insertBefore para agregarlo al principio
-    
     // PASO 4: Incrementar el contador de mensajes
-    
     // PASO 5: Actualizar el contador visual
-    
     // PASO 6: Ocultar el estado vacío si está visible
-
 
 // ============================================
 // 4. MANEJO DE EVENTOS
@@ -225,37 +214,28 @@ export { createMessageElement } from './index.js/TODO9.js';
  * Maneja el evento de envío del formulario
  * @param {Event} event - Evento del formulario
  */
-function handleFormSubmit(event) {
+import { handleFormSubmit } from './index.js';
     // TODO10: Implementar el manejador del evento submit
-    
     // PASO 1: Prevenir el comportamiento por defecto del formulario
     // Pista: event.preventDefault()
-    
     // PASO 2: Validar el formulario
     // Si no es válido, detener la ejecución (return)
-    
     // PASO 3: Obtener los valores de los campos
-    
     // PASO 4: Crear el nuevo elemento de mensaje
     // Llamar a createMessageElement con los valores obtenidos
-    
     // PASO 5: Limpiar el formulario
     // Pista: messageForm.reset()
-    
     // PASO 6: Limpiar los errores
-    
     // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
     // Pista: userNameInput.focus()
-}
 
 /**
  * Limpia los errores cuando el usuario empieza a escribir
  */
-function handleInputChange() {
+import { handleInputChange } from './index.js'
     // TODO11: Implementar limpieza de errores al escribir
     // Esta función se ejecuta cuando el usuario escribe en un campo
     // Debe limpiar el error de ese campo específico
-}
 
 
 // ============================================
@@ -273,30 +253,28 @@ function handleInputChange() {
 // Pista: userNameInput.addEventListener('input', handleInputChange);
 // Pista: userMessageInput.addEventListener('input', handleInputChange);
 
-
 // ============================================
 // 6. REFLEXIÓN Y DOCUMENTACIÓN
 // ============================================
 
 /**
  * PREGUNTAS DE REFLEXIÓN:
- * 
+ *
  * 1. ¿Qué elemento del DOM estás seleccionando?
- *    R: 
- * 
+ *    R:
+ *
  * 2. ¿Qué evento provoca el cambio en la página?
- *    R: 
- * 
+ *    R:
+ *
  * 3. ¿Qué nuevo elemento se crea?
- *    R: 
- * 
+ *    R:
+ *
  * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- *    R: 
- * 
+ *    R:
+ *
  * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- *    R: 
+ *    R:
  */
-
 
 // ============================================
 // 7. INICIALIZACIÓN (OPCIONAL)
@@ -305,14 +283,13 @@ function handleInputChange() {
 /**
  * Esta función se ejecuta cuando el DOM está completamente cargado
  */
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ DOM completamente cargado');
-    console.log('📝 Aplicación de registro de mensajes iniciada');
-    
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ DOM completamente cargado");
+    console.log("📝 Aplicación de registro de mensajes iniciada");
+
     // Aquí puedes agregar cualquier inicialización adicional
     // Por ejemplo, cargar mensajes guardados del localStorage
 });
-
 
 // ============================================
 // 8. FUNCIONALIDADES ADICIONALES (BONUS)
@@ -320,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * RETOS ADICIONALES OPCIONALES:
- * 
+ *
  * 1. Agregar un botón para eliminar mensajes individuales
  * 2. Implementar localStorage para persistir los mensajes
  * 3. Agregar un contador de caracteres en el textarea
