@@ -56,30 +56,29 @@ let totalMessages = 0;
  * @param {string} value - El valor a validar
  * @returns {boolean} - true si es válido, false si no lo es
  */
-function isValidInput(value) {
-    // TODO1: Implementar validación
-    // Pista: usa trim() para eliminar espacios al inicio y final
-    // Retorna true si después de trim() el string tiene longitud > 0
-}
+import { isValidInput } from "./index.js";
+// TODO1: Implementar validación
+// Pista: usa trim() para eliminar espacios al inicio y final
+// Retorna true si después de trim() el string tiene longitud > 0
 
 /**
  * Muestra un mensaje de error en un elemento específico
  * @param {HTMLElement} errorElement - Elemento donde mostrar el error
  * @param {string} message - Mensaje de error a mostrar
  */
-function showError(errorElement, message) {
-    // TODO2: Implementar función para mostrar error
-    // Pista: asigna el mensaje al textContent del elemento
-}
+import { showError } from "./index.js/TODO2.js";
+// TODO2: Implementar función para mostrar error
+// Pista: asigna el mensaje al textContent del elemento
 
 /**
  * Limpia el mensaje de error de un elemento específico
  * @param {HTMLElement} errorElement - Elemento del que limpiar el error
  */
-function clearError(errorElement) {
-    // TODO3: Implementar función para limpiar error
-    // Pista: asigna un string vacío al textContent
-}
+
+import { clearError } from "./index.js";
+// TODO3: Implementar función para limpiar error
+// Pista: asigna un string vacío al textContent
+
 /**
  * Valida todos los campos del formulario
  * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
@@ -180,14 +179,15 @@ function showEmptyState() {
  * @param {string} userName - Nombre del usuario
  * @param {string} message - Contenido del mensaje
  */
-function createMessageElement(userName, message) {
-    // TODO9: Implementar la creación de un nuevo mensaje
-    // PASO 1: Crear el contenedor principal del mensaje
-    // Pista: document.createElement('div')
-    // Asignar la clase 'message-card'
-    // PASO 2: Crear la estructura HTML del mensaje
-    // Puedes usar innerHTML con la siguiente estructura:
-    /*
+
+import { createMessageElement } from "./index.js";
+// TODO9: Implementar la creación de un nuevo mensaje
+// PASO 1: Crear el contenedor principal del mensaje
+// Pista: document.createElement('div')
+// Asignar la clase 'message-card'
+// PASO 2: Crear la estructura HTML del mensaje
+// Puedes usar innerHTML con la siguiente estructura:
+/*
     <div class="message-card__header">
         <div class="message-card__user">
             <div class="message-card__avatar">[INICIALES]</div>
@@ -197,13 +197,12 @@ function createMessageElement(userName, message) {
     </div>
     <div class="message-card__content">[MENSAJE]</div>
     */
-    // PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
-    // Pista: messagesContainer.appendChild(nuevoElemento)
-    // O usar insertBefore para agregarlo al principio
-    // PASO 4: Incrementar el contador de mensajes
-    // PASO 5: Actualizar el contador visual
-    // PASO 6: Ocultar el estado vacío si está visible
-}
+// PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
+// Pista: messagesContainer.appendChild(nuevoElemento)
+// O usar insertBefore para agregarlo al principio
+// PASO 4: Incrementar el contador de mensajes
+// PASO 5: Actualizar el contador visual
+// PASO 6: Ocultar el estado vacío si está visible
 
 // ============================================
 // 4. MANEJO DE EVENTOS
@@ -213,30 +212,28 @@ function createMessageElement(userName, message) {
  * Maneja el evento de envío del formulario
  * @param {Event} event - Evento del formulario
  */
-function handleFormSubmit(event) {
-    // TODO10: Implementar el manejador del evento submit
-    // PASO 1: Prevenir el comportamiento por defecto del formulario
-    // Pista: event.preventDefault()
-    // PASO 2: Validar el formulario
-    // Si no es válido, detener la ejecución (return)
-    // PASO 3: Obtener los valores de los campos
-    // PASO 4: Crear el nuevo elemento de mensaje
-    // Llamar a createMessageElement con los valores obtenidos
-    // PASO 5: Limpiar el formulario
-    // Pista: messageForm.reset()
-    // PASO 6: Limpiar los errores
-    // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
-    // Pista: userNameInput.focus()
-}
+import { handleFormSubmit } from "./index.js";
+// TODO10: Implementar el manejador del evento submit
+// PASO 1: Prevenir el comportamiento por defecto del formulario
+// Pista: event.preventDefault()
+// PASO 2: Validar el formulario
+// Si no es válido, detener la ejecución (return)
+// PASO 3: Obtener los valores de los campos
+// PASO 4: Crear el nuevo elemento de mensaje
+// Llamar a createMessageElement con los valores obtenidos
+// PASO 5: Limpiar el formulario
+// Pista: messageForm.reset()
+// PASO 6: Limpiar los errores
+// PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
+// Pista: userNameInput.focus()
 
 /**
  * Limpia los errores cuando el usuario empieza a escribir
  */
-function handleInputChange() {
-    // TODO11: Implementar limpieza de errores al escribir
-    // Esta función se ejecuta cuando el usuario escribe en un campo
-    // Debe limpiar el error de ese campo específico
-}
+import { handleInputChange } from "./index.js";
+// TODO11: Implementar limpieza de errores al escribir
+// Esta función se ejecuta cuando el usuario escribe en un campo
+// Debe limpiar el error de ese campo específico
 
 // ============================================
 // 5. REGISTRO DE EVENTOS
@@ -248,6 +245,27 @@ function handleInputChange() {
 
 // TODO12: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
+
+messageForm.addEventListener('submit', handleFormSubmit);
+
+/**
+ * PREGUNTAS DE REFLEXIÓN TODO12:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se está seleccionando el formulario con id 'messageForm' para manejar su evento de envío.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento de envío del formulario (submit).
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: Se crea un nuevo elemento de mensaje.
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: El nuevo mensaje se inserta dentro del contenedor con id 'messagesContainer'.
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Cada vez que se envía el formulario, se agrega un nuevo mensaje al contenedor, se incrementa el contador de mensajes, y si era el primer mensaje, se oculta el estado vacío. Además, el formulario se limpia para permitir ingresar un nuevo mensaje.
+ */ 
 
 // TODO13: Registrar eventos 'input' en los campos para limpiar errores al escribir
 // Pista: userNameInput.addEventListener('input', handleInputChange);
@@ -274,7 +292,7 @@ function handleInputChange() {
  *
  * 5. ¿Qué ocurre en la página cada vez que repites la acción?
  *    R:
- */
+ */ 
 
 // ============================================
 // 7. INICIALIZACIÓN (OPCIONAL)
