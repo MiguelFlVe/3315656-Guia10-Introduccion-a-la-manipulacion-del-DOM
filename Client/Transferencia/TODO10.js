@@ -46,3 +46,24 @@ const handleFormSubmit = (event) => {
     const userNameInput = document.getElementById('userName');
     userNameInput.focus();
 }
+
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se está seleccionando el formulario con id 'messageForm' para manejar su evento de envío. Además, se seleccionan los campos de entrada para obtener sus valores y para enfocar el primer campo después de enviar el mensaje.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento de envío del formulario (submit).
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: Se crea un nuevo elemento de mensaje.
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: Se inserta dentro del contenedor de mensajes.
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Se agrega un nuevo mensaje a la lista de mensajes.
+ */
+
+export { handleFormSubmit };
