@@ -57,13 +57,13 @@ let totalMessages = 0;
  * @param {string} value - El valor a validar
  * @returns {boolean} - true si es válido, false si no lo es
  */
-function isValidInput(value) {
+import { isValidInput } from './index.js';
     // TODO1: Implementar validación
     // Pista: usa trim() para eliminar espacios al inicio y final
     // Retorna true si después de trim() el string tiene longitud > 0
-}
 
-/**
+    
+ /**
  * Muestra un mensaje de error en un elemento específico
  * @param {HTMLElement} errorElement - Elemento donde mostrar el error
  * @param {string} message - Mensaje de error a mostrar
