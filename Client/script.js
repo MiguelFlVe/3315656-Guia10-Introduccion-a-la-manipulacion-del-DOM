@@ -67,15 +67,15 @@ import { isValidInput } from './index.js';
  * @param {HTMLElement} errorElement - Elemento donde mostrar el error
  * @param {string} message - Mensaje de error a mostrar
  */
-function showError(errorElement, message) {
-    // TODO2: Implementar función para mostrar error
-    // Pista: asigna el mensaje al textContent del elemento
-}
+import { showError } from "./index.js/TODO2.js";
+ // TODO2: Implementar función para mostrar error
+// Pista: asigna el mensaje al textContent del elemento
 
 /**
  * Limpia el mensaje de error de un elemento específico
  * @param {HTMLElement} errorElement - Elemento del que limpiar el error
  */
+
 import { clearError } from "./index.js";
 // TODO3: Implementar función para limpiar error
 // Pista: asigna un string vacío al textContent
