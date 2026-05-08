@@ -165,10 +165,10 @@ function hideEmptyState() {
 /**
  * Muestra el estado vacío (mensaje cuando no hay mensajes)
  */
-function showEmptyState() {
+import { showEmptyState } from "./index.js";
     // TODO8: Implementar función para mostrar el estado vacío
     // Pista: Remueve la clase 'hidden' del elemento emptyState
-}
+
 
 // ============================================
 // 3. CREACIÓN DE ELEMENTOS
