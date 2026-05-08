@@ -1,4 +1,5 @@
 export { isValidInput } from "./Transferencia/TODO1.js"; // TODO1: Implementar validación
+
 export { showError } from "./Transferencia/TODO2.js"; 
 
 export { clearError } from "./Transferencia/TODO3.js"; // TODO3: Implementar función para limpiar error
