@@ -1,1 +1,1 @@
-export { getInitials } from "./Transferencia/Todo 5.js";
+export { getInitials } from "./Transferencia/TODO5.js";
