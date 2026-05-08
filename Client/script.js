@@ -232,11 +232,11 @@ import { handleFormSubmit } from './index.js';
 /**
  * Limpia los errores cuando el usuario empieza a escribir
  */
-function handleInputChange() {
+import { handleInputChange } from './index.js'
     // TODO11: Implementar limpieza de errores al escribir
     // Esta función se ejecuta cuando el usuario escribe en un campo
     // Debe limpiar el error de ese campo específico
-}
+
 
 // ============================================
 // 5. REGISTRO DE EVENTOS
