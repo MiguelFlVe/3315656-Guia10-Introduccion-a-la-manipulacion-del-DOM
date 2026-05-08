@@ -157,10 +157,10 @@ function updateMessageCount() {
 /**
  * Oculta el estado vacío (mensaje cuando no hay mensajes)
  */
-function hideEmptyState() {
+import { hideEmptyState } from "./index.js";
     // TODO7: Implementar función para ocultar el estado vacío
     // Pista: Agrega la clase 'hidden' al elemento emptyState
-}
+
 
 /**
  * Muestra el estado vacío (mensaje cuando no hay mensajes)
