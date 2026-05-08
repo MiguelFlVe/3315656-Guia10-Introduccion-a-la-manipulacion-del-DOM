@@ -182,7 +182,7 @@ function showEmptyState() {
  * @param {string} message - Contenido del mensaje
  */
 
-export { createMessageElement } from './index.js/TODO9.js';
+import { createMessageElement } from './index.js';
     // TODO9: Implementar la creación de un nuevo mensaje
     // PASO 1: Crear el contenedor principal del mensaje
     // Pista: document.createElement('div')
