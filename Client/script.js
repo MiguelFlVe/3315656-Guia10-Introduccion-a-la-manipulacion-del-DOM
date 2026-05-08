@@ -56,19 +56,18 @@ let totalMessages = 0;
  * @param {string} value - El valor a validar
  * @returns {boolean} - true si es válido, false si no lo es
  */
-import { isValidInput } from './index.js';
-    // TODO1: Implementar validación
-    // Pista: usa trim() para eliminar espacios al inicio y final
-    // Retorna true si después de trim() el string tiene longitud > 0
+import { isValidInput } from "./index.js";
+// TODO1: Implementar validación
+// Pista: usa trim() para eliminar espacios al inicio y final
+// Retorna true si después de trim() el string tiene longitud > 0
 
-    
- /**
+/**
  * Muestra un mensaje de error en un elemento específico
  * @param {HTMLElement} errorElement - Elemento donde mostrar el error
  * @param {string} message - Mensaje de error a mostrar
  */
 import { showError } from "./index.js/TODO2.js";
- // TODO2: Implementar función para mostrar error
+// TODO2: Implementar función para mostrar error
 // Pista: asigna el mensaje al textContent del elemento
 
 /**
@@ -181,14 +180,14 @@ function showEmptyState() {
  * @param {string} message - Contenido del mensaje
  */
 
-import { createMessageElement } from './index.js';
-    // TODO9: Implementar la creación de un nuevo mensaje
-    // PASO 1: Crear el contenedor principal del mensaje
-    // Pista: document.createElement('div')
-    // Asignar la clase 'message-card'
-    // PASO 2: Crear la estructura HTML del mensaje
-    // Puedes usar innerHTML con la siguiente estructura:
-    /*
+import { createMessageElement } from "./index.js";
+// TODO9: Implementar la creación de un nuevo mensaje
+// PASO 1: Crear el contenedor principal del mensaje
+// Pista: document.createElement('div')
+// Asignar la clase 'message-card'
+// PASO 2: Crear la estructura HTML del mensaje
+// Puedes usar innerHTML con la siguiente estructura:
+/*
     <div class="message-card__header">
         <div class="message-card__user">
             <div class="message-card__avatar">[INICIALES]</div>
@@ -198,12 +197,12 @@ import { createMessageElement } from './index.js';
     </div>
     <div class="message-card__content">[MENSAJE]</div>
     */
-    // PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
-    // Pista: messagesContainer.appendChild(nuevoElemento)
-    // O usar insertBefore para agregarlo al principio
-    // PASO 4: Incrementar el contador de mensajes
-    // PASO 5: Actualizar el contador visual
-    // PASO 6: Ocultar el estado vacío si está visible
+// PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
+// Pista: messagesContainer.appendChild(nuevoElemento)
+// O usar insertBefore para agregarlo al principio
+// PASO 4: Incrementar el contador de mensajes
+// PASO 5: Actualizar el contador visual
+// PASO 6: Ocultar el estado vacío si está visible
 
 // ============================================
 // 4. MANEJO DE EVENTOS
@@ -213,29 +212,28 @@ import { createMessageElement } from './index.js';
  * Maneja el evento de envío del formulario
  * @param {Event} event - Evento del formulario
  */
-import { handleFormSubmit } from './index.js';
-    // TODO10: Implementar el manejador del evento submit
-    // PASO 1: Prevenir el comportamiento por defecto del formulario
-    // Pista: event.preventDefault()
-    // PASO 2: Validar el formulario
-    // Si no es válido, detener la ejecución (return)
-    // PASO 3: Obtener los valores de los campos
-    // PASO 4: Crear el nuevo elemento de mensaje
-    // Llamar a createMessageElement con los valores obtenidos
-    // PASO 5: Limpiar el formulario
-    // Pista: messageForm.reset()
-    // PASO 6: Limpiar los errores
-    // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
-    // Pista: userNameInput.focus()
+import { handleFormSubmit } from "./index.js";
+// TODO10: Implementar el manejador del evento submit
+// PASO 1: Prevenir el comportamiento por defecto del formulario
+// Pista: event.preventDefault()
+// PASO 2: Validar el formulario
+// Si no es válido, detener la ejecución (return)
+// PASO 3: Obtener los valores de los campos
+// PASO 4: Crear el nuevo elemento de mensaje
+// Llamar a createMessageElement con los valores obtenidos
+// PASO 5: Limpiar el formulario
+// Pista: messageForm.reset()
+// PASO 6: Limpiar los errores
+// PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
+// Pista: userNameInput.focus()
 
 /**
  * Limpia los errores cuando el usuario empieza a escribir
  */
-import { handleInputChange } from './index.js'
-    // TODO11: Implementar limpieza de errores al escribir
-    // Esta función se ejecuta cuando el usuario escribe en un campo
-    // Debe limpiar el error de ese campo específico
-
+import { handleInputChange } from "./index.js";
+// TODO11: Implementar limpieza de errores al escribir
+// Esta función se ejecuta cuando el usuario escribe en un campo
+// Debe limpiar el error de ese campo específico
 
 // ============================================
 // 5. REGISTRO DE EVENTOS
