@@ -6,6 +6,8 @@ export { clearError } from "./Transferencia/TODO3.js"; // TODO3: Implementar fun
 
 export { validateForm } from "./Transferencia/TODO4.js"; // TODO4: Implementar validación completa del formulario
 
+export { getInitials } from "./Transferencia/TODO5.js";  // TODO5: Implementar función para obtener iniciales
+
 export { hideEmptyState } from "./Transferencia/TODO7.js" // // TODO7: Implementar función para ocultar el estado vacío
 
 export { createMessageElement } from "./Transferencia/TODO9.js"; // TODO9: Implementar la creación de un nuevo mensaje

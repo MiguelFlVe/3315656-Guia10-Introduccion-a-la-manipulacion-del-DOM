@@ -83,7 +83,7 @@ import { clearError } from "./index.js";
  * Valida todos los campos del formulario
  * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
  */
-import { validateForm } from "./index.js";
+import { validateForm } from "./index.js"
 // TODO4: Implementar validación completa del formulario
 // 1. Obtener los valores de los inputs usando .value
 // 2. Crear una variable para saber si el formulario es válido (inicialmente true)
@@ -114,7 +114,6 @@ import { validateForm } from "./index.js";
     
     return isValid;
     */
-
 /**
  * Obtiene la fecha y hora actual formateada
  * @returns {string} - Fecha y hora en formato legible
@@ -136,14 +135,14 @@ function getCurrentTimestamp() {
  * @param {string} name - Nombre completo
  * @returns {string} - Iniciales en mayúsculas
  */
-function getInitials(name) {
+import { getInitials } from "./index.js";
     // TODO5: Implementar función para obtener iniciales
     // Pista:
     // 1. Separar el nombre por espacios usando split(' ')
     // 2. Tomar la primera letra de cada palabra
     // 3. Unirlas y convertirlas a mayúsculas
     // 4. Si solo hay una palabra, retornar las dos primeras letras
-}
+
 
 /**
  * Actualiza el contador de mensajes
@@ -246,7 +245,11 @@ import { handleInputChange } from "./index.js";
 // TODO12: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
 
-messageForm.addEventListener('submit', handleFormSubmit);
+const messageSubmit = messageForm.addEventListener('submit', handleFormSubmit);
+
+if (messageSubmit) {
+    handleFormSubmit(event)
+}
 
 /**
  * PREGUNTAS DE REFLEXIÓN TODO12:
@@ -270,6 +273,33 @@ messageForm.addEventListener('submit', handleFormSubmit);
 // TODO13: Registrar eventos 'input' en los campos para limpiar errores al escribir
 // Pista: userNameInput.addEventListener('input', handleInputChange);
 // Pista: userMessageInput.addEventListener('input', handleInputChange);
+
+const nameInput = userNameInput.addEventListener('input', handleInputChange);
+
+const messageInput = userMessageInput.addEventListener('input', handleInputChange);
+
+if (nameInput || messageInput) {
+    validateForm();
+}
+
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se selecciona el formulario.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El ingreso o edición de caracteres en los campos del formulario
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: No se crea un elemento nuevo
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: No se inserta un elemento nuevo
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Se muestra una guía visual para los errores en los caracteres ingresados
+ */ 
 
 // ============================================
 // 6. REFLEXIÓN Y DOCUMENTACIÓN
