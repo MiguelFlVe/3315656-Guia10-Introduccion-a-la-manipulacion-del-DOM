@@ -84,7 +84,7 @@ function clearError(errorElement) {
  * Valida todos los campos del formulario
  * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
  */
-function validateForm() { 
+import { validateForm } from "./index.js"
 // TODO4: Implementar validación completa del formulario
 // 1. Obtener los valores de los inputs usando .value
 // 2. Crear una variable para saber si el formulario es válido (inicialmente true)
@@ -115,7 +115,7 @@ function validateForm() {
     
     return isValid;
     */
-}
+
 /**
  * Obtiene la fecha y hora actual formateada
  * @returns {string} - Fecha y hora en formato legible
@@ -249,9 +249,57 @@ function handleInputChange() {
 // TODO12: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
 
+messageForm.addEventListener('submit', handleFormSubmit);
+
+/**
+ * PREGUNTAS DE REFLEXIÓN TODO12:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se está seleccionando el formulario con id 'messageForm' para manejar su evento de envío.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento de envío del formulario (submit).
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: Se crea un nuevo elemento de mensaje.
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: El nuevo mensaje se inserta dentro del contenedor con id 'messagesContainer'.
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Cada vez que se envía el formulario, se agrega un nuevo mensaje al contenedor, se incrementa el contador de mensajes, y si era el primer mensaje, se oculta el estado vacío. Además, el formulario se limpia para permitir ingresar un nuevo mensaje.
+ */ 
+
 // TODO13: Registrar eventos 'input' en los campos para limpiar errores al escribir
 // Pista: userNameInput.addEventListener('input', handleInputChange);
 // Pista: userMessageInput.addEventListener('input', handleInputChange);
+
+const nameInput = userNameInput.addEventListener('input', handleInputChange);
+
+const messageInput = userMessageInput.addEventListener('input', handleInputChange);
+
+if (nameInput || messageInput) {
+    validateForm();
+}
+
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se selecciona el formulario.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El ingreso o edición de caracteres en los campos del formulario
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: No se crea un elemento nuevo
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: No se inserta un elemento nuevo
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Se muestra una guía visual para los errores en los caracteres ingresados
+ */ 
 
 // ============================================
 // 6. REFLEXIÓN Y DOCUMENTACIÓN
