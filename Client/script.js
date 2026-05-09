@@ -245,7 +245,11 @@ import { handleInputChange } from "./index.js";
 // TODO12: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
 
-messageForm.addEventListener('submit', handleFormSubmit);
+const messageSubmit = messageForm.addEventListener('submit', handleFormSubmit);
+
+if (messageSubmit) {
+    handleFormSubmit(event)
+}
 
 /**
  * PREGUNTAS DE REFLEXIÓN TODO12:
@@ -269,6 +273,33 @@ messageForm.addEventListener('submit', handleFormSubmit);
 // TODO13: Registrar eventos 'input' en los campos para limpiar errores al escribir
 // Pista: userNameInput.addEventListener('input', handleInputChange);
 // Pista: userMessageInput.addEventListener('input', handleInputChange);
+
+const nameInput = userNameInput.addEventListener('input', handleInputChange);
+
+const messageInput = userMessageInput.addEventListener('input', handleInputChange);
+
+if (nameInput || messageInput) {
+    validateForm();
+}
+
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se selecciona el formulario.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El ingreso o edición de caracteres en los campos del formulario
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: No se crea un elemento nuevo
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: No se inserta un elemento nuevo
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Se muestra una guía visual para los errores en los caracteres ingresados
+ */ 
 
 // ============================================
 // 6. REFLEXIÓN Y DOCUMENTACIÓN
