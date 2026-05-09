@@ -83,7 +83,7 @@ import { clearError } from "./index.js";
  * Valida todos los campos del formulario
  * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
  */
-import { validateForm } from "./index.js";
+import { validateForm } from "./index.js"
 // TODO4: Implementar validación completa del formulario
 // 1. Obtener los valores de los inputs usando .value
 // 2. Crear una variable para saber si el formulario es válido (inicialmente true)
@@ -114,7 +114,6 @@ import { validateForm } from "./index.js";
     
     return isValid;
     */
-
 /**
  * Obtiene la fecha y hora actual formateada
  * @returns {string} - Fecha y hora en formato legible
@@ -136,14 +135,14 @@ function getCurrentTimestamp() {
  * @param {string} name - Nombre completo
  * @returns {string} - Iniciales en mayúsculas
  */
-function getInitials(name) {
+import { getInitials } from "./index.js";
     // TODO5: Implementar función para obtener iniciales
     // Pista:
     // 1. Separar el nombre por espacios usando split(' ')
     // 2. Tomar la primera letra de cada palabra
     // 3. Unirlas y convertirlas a mayúsculas
     // 4. Si solo hay una palabra, retornar las dos primeras letras
-}
+
 
 /**
  * Actualiza el contador de mensajes
