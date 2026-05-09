@@ -8,6 +8,8 @@ export { validateForm } from "./Transferencia/TODO4.js"; // TODO4: Implementar v
 
 export { getInitials } from "./Transferencia/TODO5.js";  // TODO5: Implementar función para obtener iniciales
 
+export { updateMessageCount } from "./Transferencia/TODO6.js"; // TODO6: Implementar actualización del contador
+
 export { hideEmptyState } from "./Transferencia/TODO7.js" // // TODO7: Implementar función para ocultar el estado vacío
 
 export { createMessageElement } from "./Transferencia/TODO9.js"; // TODO9: Implementar la creación de un nuevo mensaje
@@ -15,3 +17,4 @@ export { createMessageElement } from "./Transferencia/TODO9.js"; // TODO9: Imple
 export { handleFormSubmit } from "./Transferencia/TODO10.js"; // TODO10: Implementar el manejador del evento submit
 
 export { handleInputChange } from "./Transferencia/TODO11.js"; // TODO11: Implementar limpieza de errores al escribir
+
