@@ -180,7 +180,7 @@ import { showEmptyState } from "./index.js";
  * @param {string} userName - Nombre del usuario
  * @param {string} message - Contenido del mensaje
  */
-function createMessageElement(userName, message) {
+import { createMessageElement } from './index.js'
     // TODO9: Implementar la creación de un nuevo mensaje
     // PASO 1: Crear el contenedor principal del mensaje
     // Pista: document.createElement('div')
@@ -203,7 +203,6 @@ function createMessageElement(userName, message) {
     // PASO 4: Incrementar el contador de mensajes
     // PASO 5: Actualizar el contador visual
     // PASO 6: Ocultar el estado vacío si está visible
-}
 
 // ============================================
 // 4. MANEJO DE EVENTOS
@@ -213,7 +212,7 @@ function createMessageElement(userName, message) {
  * Maneja el evento de envío del formulario
  * @param {Event} event - Evento del formulario
  */
-function handleFormSubmit(event) {
+import { handleFormSubmit } from "./index.js";
     // TODO10: Implementar el manejador del evento submit
     // PASO 1: Prevenir el comportamiento por defecto del formulario
     // Pista: event.preventDefault()
@@ -227,16 +226,14 @@ function handleFormSubmit(event) {
     // PASO 6: Limpiar los errores
     // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
     // Pista: userNameInput.focus()
-}
 
 /**
  * Limpia los errores cuando el usuario empieza a escribir
  */
-function handleInputChange() {
+import { handleInputChange } from './index.js'
     // TODO11: Implementar limpieza de errores al escribir
     // Esta función se ejecuta cuando el usuario escribe en un campo
     // Debe limpiar el error de ese campo específico
-}
 
 // ============================================
 // 5. REGISTRO DE EVENTOS
@@ -274,13 +271,9 @@ messageForm.addEventListener('submit', handleFormSubmit);
 // Pista: userNameInput.addEventListener('input', handleInputChange);
 // Pista: userMessageInput.addEventListener('input', handleInputChange);
 
-const nameInput = userNameInput.addEventListener('input', handleInputChange);
+userNameInput.addEventListener('input', handleInputChange);
 
-const messageInput = userMessageInput.addEventListener('input', handleInputChange);
-
-if (nameInput || messageInput) {
-    validateForm();
-}
+userMessageInput.addEventListener('input', handleInputChange);
 
 /**
  * PREGUNTAS DE REFLEXIÓN:
