@@ -12,6 +12,8 @@ export { updateMessageCount } from "./Transferencia/TODO6.js"; // TODO6: Impleme
 
 export { hideEmptyState } from "./Transferencia/TODO7.js" // // TODO7: Implementar función para ocultar el estado vacío
 
+export {showEmptyState} from "./Transferencia/TODO8.js" // TODO8: Implementar función para mostrar el estado vacío
+
 export { createMessageElement } from "./Transferencia/TODO9.js"; // TODO9: Implementar la creación de un nuevo mensaje
 
 export { handleFormSubmit } from "./Transferencia/TODO10.js"; // TODO10: Implementar el manejador del evento submit
