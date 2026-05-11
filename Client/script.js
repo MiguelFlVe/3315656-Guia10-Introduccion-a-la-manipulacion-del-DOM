@@ -414,11 +414,16 @@ function showEmptyState() {
  * @param {string} userName - Nombre del usuario
  * @param {string} message - Contenido del mensaje
  */
-import { createMessageElement } from './index.js'
+const createMessageElement = (userName, message) => {
     // TODO9: Implementar la creación de un nuevo mensaje
+    
     // PASO 1: Crear el contenedor principal del mensaje
     // Pista: document.createElement('div')
     // Asignar la clase 'message-card'
+
+    const messageCard = document.createElement('div');
+    messageCard.classList.add('message-card');
+    
     // PASO 2: Crear la estructura HTML del mensaje
     // Puedes usar innerHTML con la siguiente estructura:
     /*
@@ -431,12 +436,70 @@ import { createMessageElement } from './index.js'
     </div>
     <div class="message-card__content">[MENSAJE]</div>
     */
+
+    messageCard.innerHTML = `
+    <div class="message-card__header">
+        <div class="message-card__user">
+            <div class="message-card__avatar">[INICIALES]</div>
+            <span class="message-card__username">[NOMBRE]</span>
+        </div>
+        <span class="message-card__timestamp">[FECHA]</span>
+    </div>
+    <div class="message-card__content">[MENSAJE]</div>
+    `;
+
+    const avatarElement = messageCard.querySelector('.message-card__avatar');
+    const usernameElement = messageCard.querySelector('.message-card__username');
+    const timestampElement = messageCard.querySelector('.message-card__timestamp');
+    const contentElement = messageCard.querySelector('.message-card__content');
+
+    avatarElement.textContent = getInitials(userName);
+    usernameElement.textContent = userName;
+    timestampElement.textContent = getCurrentTimestamp();
+    contentElement.textContent = message;
+
     // PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
     // Pista: messagesContainer.appendChild(nuevoElemento)
     // O usar insertBefore para agregarlo al principio
+    
+    const messagesContainer = document.getElementById('messagesContainer');
+    messagesContainer.insertBefore(messageCard, messagesContainer.firstChild);
+    
     // PASO 4: Incrementar el contador de mensajes
+
+    messageCount++;
+    
     // PASO 5: Actualizar el contador visual
+
+    const messageCountElement = document.getElementById('messageCount');
+    messageCountElement.textContent = `Mensajes: ${messageCount}`;
+    
     // PASO 6: Ocultar el estado vacío si está visible
+
+    const emptyState = document.getElementById('emptyState');
+    if (emptyState) {
+        emptyState.style.display = 'none';
+    }
+}
+
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ * 
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: El elemento div (contenedor principal del mensaje), con la clase 'message-card'. El elemento div (contenedor del header del mensaje), con la clase 'message-card__header'. El elemento div (contenedor del usuario), con la clase 'message-card__user'. El elemento div (avatar del usuario), con la clase 'message-card__avatar'. El elemento span (nombre del usuario), con la clase 'message-card__username'. El elemento span (timestamp del mensaje), con la clase 'message-card__timestamp'. El elemento div (contenido del mensaje), con la clase 'message-card__content'.
+ * 
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento 'submit' del formulario de envío de mensajes, que desencadena la función createMessageElement para crear y agregar un nuevo mensaje al contenedor de mensajes.
+ * 
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: Un nuevo elemento div con la clase 'message-card'.
+ * 
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: Se inserta dentro del contenedor de mensajes (messagesContainer).
+ * 
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Se agrega un nuevo mensaje al contenedor de mensajes y se actualiza el contador.
+ */
 
 // ============================================
 // 4. MANEJO DE EVENTOS
@@ -446,28 +509,102 @@ import { createMessageElement } from './index.js'
  * Maneja el evento de envío del formulario
  * @param {Event} event - Evento del formulario
  */
-import { handleFormSubmit } from "./index.js";
+const handleFormSubmit = (event) => {
     // TODO10: Implementar el manejador del evento submit
+    
     // PASO 1: Prevenir el comportamiento por defecto del formulario
     // Pista: event.preventDefault()
+
+    event.preventDefault();
+    
     // PASO 2: Validar el formulario
     // Si no es válido, detener la ejecución (return)
+
+    const validForm = validateForm();
+    if (!validForm) {
+        return;
+    }
+    
     // PASO 3: Obtener los valores de los campos
+
+    const userName = document.getElementById('userNameInput').value;
+    const message = document.getElementById('messageInput').value;
+    
     // PASO 4: Crear el nuevo elemento de mensaje
     // Llamar a createMessageElement con los valores obtenidos
+
+    createMessageElement(userName, message);
+    
     // PASO 5: Limpiar el formulario
     // Pista: messageForm.reset()
+
+    const messageForm = document.getElementById('messageForm');
+    messageForm.reset();
+    
     // PASO 6: Limpiar los errores
+
+    clearError();
+    
     // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
     // Pista: userNameInput.focus()
+
+    const userNameInput = document.getElementById('userName');
+    userNameInput.focus();
+}
+
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: Se está seleccionando el formulario con id 'messageForm' para manejar su evento de envío. Además, se seleccionan los campos de entrada para obtener sus valores y para enfocar el primer campo después de enviar el mensaje.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento de envío del formulario (submit).
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: Se crea un nuevo elemento de mensaje.
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: Se inserta dentro del contenedor de mensajes.
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Se agrega un nuevo mensaje a la lista de mensajes.
+ */
 
 /**
  * Limpia los errores cuando el usuario empieza a escribir
  */
-import { handleInputChange } from './index.js'
+const handleInputChange = () => {
     // TODO11: Implementar limpieza de errores al escribir
+
     // Esta función se ejecuta cuando el usuario escribe en un campo
     // Debe limpiar el error de ese campo específico
+
+    event.preventDefault(); // Evitar el comportamiento predeterminado del evento
+
+    const inputField = event.target; // Obtener el campo de entrada que se está editando
+
+    clearError('inputField'); // Llamar a la función clearError con el campo específico
+}
+
+/**
+ * PREGUNTAS DE REFLEXIÓN:
+ *
+ * 1. ¿Qué elemento del DOM estás seleccionando?
+ *    R: El elemento input en el que se ingresa el dato de texto, específicamente aquel en el que se genera el evento llamado por event.target.
+ *
+ * 2. ¿Qué evento provoca el cambio en la página?
+ *    R: El evento que provoca el cambio es el evento de entrada (input) o cambio (change) en el campo de texto, que se activa cada vez que el usuario escribe o modifica el contenido del campo.
+ *
+ * 3. ¿Qué nuevo elemento se crea?
+ *    R: No se crea un nuevo elemento.
+ *
+ * 4. ¿Dónde se inserta ese elemento dentro del DOM?
+ *    R: No se inserta un nuevo elemento.
+ *
+ * 5. ¿Qué ocurre en la página cada vez que repites la acción?
+ *    R: Cada vez que se repite la acción de escribir en el campo de texto, se limpia el error asociado a ese campo específico, lo que mejora la experiencia del usuario al eliminar mensajes de error innecesarios mientras corrige su entrada.
+ */
 
 // ============================================
 // 5. REGISTRO DE EVENTOS
