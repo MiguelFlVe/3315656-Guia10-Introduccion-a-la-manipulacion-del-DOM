@@ -195,11 +195,11 @@ function validateForm() {
 
     // Validar mensaje
     if (!isValidInput(userMessage)) {
-        showError(messageError, "El mensaje es obligatorio");
+        showError(userMessageError, "El mensaje es obligatorio");
         userMessageInput.classList.add("error");
         isValid = false;
     } else {
-        clearError(messageError);
+        clearError(userMessageError);
         userMessageInput.classList.remove("error");
     }
 
@@ -467,12 +467,11 @@ const createMessageElement = (userName, message) => {
     
     // PASO 4: Incrementar el contador de mensajes
 
-    messageCount++;
+    totalMessages++;
     
     // PASO 5: Actualizar el contador visual
 
-    const messageCountElement = document.getElementById('messageCount');
-    messageCountElement.textContent = `Mensajes: ${messageCount}`;
+    messageCount.textContent = `Mensajes: ${totalMessages}`;
     
     // PASO 6: Ocultar el estado vacío si está visible
 
@@ -527,8 +526,8 @@ const handleFormSubmit = (event) => {
     
     // PASO 3: Obtener los valores de los campos
 
-    const userName = document.getElementById('userNameInput').value;
-    const message = document.getElementById('messageInput').value;
+    const userName = document.getElementById('userName').value;
+    const message = document.getElementById('userMessage').value;
     
     // PASO 4: Crear el nuevo elemento de mensaje
     // Llamar a createMessageElement con los valores obtenidos
