@@ -1,18 +1,3 @@
-export { isValidInput } from "./Transferencia/TODO1.js"; // TODO1: Implementar validación
-
-export { showError } from "./Transferencia/TODO2.js"; // TODO2: Implementar función para mostrar error
-
-export { clearError } from "./Transferencia/TODO3.js"; // TODO3: Implementar función para limpiar error
-
-export { validateForm } from "./Transferencia/TODO4.js"; // TODO4: Implementar validación completa del formulario
-
-export { getInitials } from "./Transferencia/TODO5.js";  // TODO5: Implementar función para obtener iniciales
-
-export { updateMessageCount } from "./Transferencia/TODO6.js"; // TODO6: Implementar actualización del contador
-
-export { hideEmptyState } from "./Transferencia/TODO7.js" // // TODO7: Implementar función para ocultar el estado vacío
-
-export {showEmptyState} from "./Transferencia/TODO8.js" // TODO8: Implementar función para mostrar el estado vacío
 
 export { createMessageElement } from "./Transferencia/TODO9.js"; // TODO9: Implementar la creación de un nuevo mensaje
 
