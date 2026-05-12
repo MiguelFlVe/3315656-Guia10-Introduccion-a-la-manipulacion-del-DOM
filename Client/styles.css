@@ -352,6 +352,52 @@ button {
     background: rgba(14, 165, 233, 0.1);
 }
 
+.info-message--error {
+    color: var(--color-error);
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.task-status {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.task-status--pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--color-warning);
+}
+
+.task-status--in-progress {
+    background: rgba(14, 165, 233, 0.15);
+    color: var(--color-secondary);
+}
+
+.task-status--completed {
+    background: rgba(20, 184, 166, 0.15);
+    color: var(--color-success);
+}
+
+.task-register__fieldset:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.task-register__fieldset:disabled .form__input,
+.task-register__fieldset:disabled .form__textarea,
+.task-register__fieldset:disabled .form select {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.task-register__fieldset:disabled .btn {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .tasks__header {
     display: flex;
     flex-wrap: wrap;
@@ -499,5 +545,6 @@ button {
     .tasks__subtitle,
     .user-card__item {
         font-size: var(--font-size-sm);
+        
     }
 }
