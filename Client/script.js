@@ -391,11 +391,7 @@ function handleInputChange(event) {
 // ============================================
 
 userSearchForm.addEventListener("submit", handleUserSearch);
-const submitTaskBtn = document.getElementById("submitTaskBtn");
-submitTaskBtn.addEventListener("click", function(e) {
-    e.preventDefault();
-    handleTaskSubmit();
-});
+document.getElementById("submitTaskBtn").addEventListener("click", handleTaskSubmit);
 
 userDocumentInput.addEventListener("input", handleInputChange);
 taskTitleInput.addEventListener("input", handleInputChange);
