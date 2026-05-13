@@ -16,6 +16,14 @@
 // ============================================
 // 1. SELECCIÓN DE ELEMENTOS DEL DOM
 // ============================================
+// Aquí se guardan las referencias a los elementos del HTML que se usan
+// durante toda la aplicación: formularios, mensajes, tabla de tareas, etc.
+
+const STORAGE_KEYS = {
+    TASKS: "taskManagerTasks"
+};
+
+const apiUrl = 'http://10.5.225.181:3050/';
 
 const userSearchForm = document.getElementById("userSearchForm");
 const userDocumentInput = document.getElementById("userDocument");
@@ -42,19 +50,73 @@ const taskStatusError = document.getElementById("taskStatusError");
 const tasksTableBody = document.getElementById("tasksTableBody");
 const tasksEmptyState = document.getElementById("tasksEmptyState");
 
-let currentUserId = null;
-let dbUsers = [];
-let dbTasks = [];
+// Usuarios y tareas de respaldo cuando el backend no está disponible.
+const FALLBACK_USERS = [
+    { id: "1", name: "Ana Torres", email: "ana.torres@mail.com" },
+    { id: "2", name: "Carlos Gómez", email: "carlos.gomez@mail.com" },
+    { id: "3", name: "María López", email: "maria.lopez@mail.com" },
+    { id: "4", name: "Juan Pérez", email: "juan.perez@mail.com" },
+    { id: "5", name: "Laura Martínez", email: "laura.martinez@mail.com" },
+    { id: "6", name: "Pedro Sánchez", email: "pedro.sanchez@mail.com" },
+    { id: "7", name: "Sofía Ramírez", email: "sofia.ramirez@mail.com" },
+    { id: "8", name: "Andrés Morales", email: "andres.morales@mail.com" },
+    { id: "9", name: "Valentina Cruz", email: "valentina.cruz@mail.com" },
+    { id: "10", name: "Diego Herrera", email: "diego.herrera@mail.com" }
+];
 
+const FALLBACK_TASKS = [];
+
+let currentUserId = null; // Guarda el ID del usuario actualmente seleccionado.
+let dbUsers = []; // Lista de usuarios cargados del backend o de respaldo.
+let dbTasks = []; // Lista de tareas cargadas del backend o localmente.
+
+// Normaliza un valor de ID a cadena sin espacios extra.
+function normalizeId(value) {
+    return String(value ?? "").trim();
+}
+
+// Carga datos de usuarios y tareas desde el backend. Si falla, usa datos de respaldo.
+// También combina las tareas guardadas en localStorage con las tareas cargadas.
 async function loadLocalData() {
     try {
-        const response = await fetch("../Server/db.json");
-        if (!response.ok) throw new Error("No se pudo cargar la base de datos");
-        const data = await response.json();
-        dbUsers = data.users || [];
-        dbTasks = data.tasks || [];
+        const [usersResponse, tasksResponse] = await Promise.all([
+            fetch(`${apiUrl}users`),
+            fetch(`${apiUrl}tasks`)
+        ]);
+
+        if (!usersResponse.ok || !tasksResponse.ok) {
+            throw new Error("No se pudo cargar datos del backend");
+        }
+
+        const [usersData, tasksData] = await Promise.all([
+            usersResponse.json(),
+            tasksResponse.json()
+        ]);
+
+        dbUsers = (Array.isArray(usersData) ? usersData : usersData.users || [])
+            .map(user => ({
+                ...user,
+                id: normalizeId(user.id)
+            }));
+
+        dbTasks = (Array.isArray(tasksData) ? tasksData : tasksData.tasks || [])
+            .map(task => ({
+                ...task,
+                id: normalizeId(task.id),
+                userId: normalizeId(task.userId)
+            }));
     } catch (error) {
-        console.warn("No se pudo cargar db.json, usando JSONPlaceholder");
+        console.warn("No se pudo cargar datos desde el backend, usando datos locales de respaldo", error);
+        dbUsers = [...FALLBACK_USERS];
+        dbTasks = [...FALLBACK_TASKS];
+    }
+
+    const storedTasks = loadSavedTasks();
+    if (storedTasks.length > 0) {
+        dbTasks = [
+            ...dbTasks,
+            ...storedTasks.filter(task => !dbTasks.some(local => normalizeId(local.id) === normalizeId(task.id)))
+        ];
     }
 }
 
@@ -62,18 +124,22 @@ async function loadLocalData() {
 // 2. FUNCIONES AUXILIARES
 // ============================================
 
+// Determina si un valor de entrada no está vacío.
 function isValidInput(value) {
     return value.trim().length > 0;
 }
 
+// Muestra mensaje de error junto a un campo.
 function showError(errorElement, message) {
     errorElement.textContent = message;
 }
 
+// Limpia el texto de error de un campo.
 function clearError(errorElement) {
     errorElement.textContent = "";
 }
 
+// Elimina todos los mensajes de error visibles en la página.
 function clearAllErrors() {
     clearError(userDocumentError);
     clearError(taskTitleError);
@@ -81,14 +147,17 @@ function clearAllErrors() {
     clearError(taskStatusError);
 }
 
+// Muestra la tarjeta de usuario con la información del usuario encontrado.
 function showUserCard() {
     userCard.classList.remove("hidden");
 }
 
+// Oculta la tarjeta de usuario cuando no hay ningún usuario seleccionado.
 function hideUserCard() {
     userCard.classList.add("hidden");
 }
 
+// Muestra un mensaje de información o error debajo del formulario de búsqueda.
 function showUserMessage(message, isError = false) {
     userSearchMessage.textContent = message;
     userSearchMessage.classList.remove("hidden");
@@ -99,29 +168,35 @@ function showUserMessage(message, isError = false) {
     }
 }
 
+// Oculta el mensaje de búsqueda de usuario.
 function hideUserMessage() {
     userSearchMessage.classList.add("hidden");
 }
 
+// Activa el formulario de tareas para permitir el registro de nuevas tareas.
 function enableTaskForm() {
     taskFormFieldset.disabled = false;
 }
 
+// Desactiva el formulario de tareas cuando no hay usuario seleccionado.
 function disableTaskForm() {
     taskFormFieldset.disabled = true;
 }
 
+// Oculta el estado de tabla vacía.
 function hideEmptyState() {
     tasksEmptyState.classList.add("hidden");
 }
 
+// Muestra el indicador de tabla vacía cuando no hay tareas para el usuario.
 function showEmptyState() {
     tasksEmptyState.classList.remove("hidden");
 }
 
+// Valida el formulario de búsqueda de usuario.
 function validateUserSearch() {
-    const document = userDocumentInput.value;
-    if (!isValidInput(document)) {
+    const documentValue = normalizeId(userDocumentInput.value);
+    if (!isValidInput(documentValue)) {
         showError(userDocumentError, "El documento es obligatorio");
         return false;
     }
@@ -129,6 +204,7 @@ function validateUserSearch() {
     return true;
 }
 
+// Valida los campos del formulario de tarea y marca los errores correspondientes.
 function validateTaskForm() {
     let isValid = true;
 
@@ -162,38 +238,42 @@ function validateTaskForm() {
     return isValid;
 }
 
+// Busca un usuario en la lista cargada mediante su documento/inID.
+function findUserByDocument(documentValue) {
+    const normalizedDocument = normalizeId(documentValue);
+    return dbUsers.find(user => normalizeId(user.id) === normalizedDocument);
+}
+
+// Devuelve las tareas asociadas a un usuario específico.
+// Considera nombres de campo comunes de distintas fuentes de datos.
+function getUserTasks(userId) {
+    const normalizedUserId = normalizeId(userId);
+    return dbTasks.filter(task =>
+        normalizeId(task.userId) === normalizedUserId ||
+        normalizeId(task.user_id) === normalizedUserId ||
+        normalizeId(task.id_usuario) === normalizedUserId
+    );
+}
+
 // ============================================
 // 3. MANEJO DE EVENTOS - BÚSQUEDA DE USUARIO
 // ============================================
 
+// Procesa el envío del formulario de búsqueda de usuario.
 async function handleUserSearch(event) {
     event.preventDefault();
+    clearAllErrors();
+    hideUserMessage();
 
     if (!validateUserSearch()) {
         return;
     }
 
-    const document = userDocumentInput.value.trim();
-
-    let user = null;
-
-    if (dbUsers.length > 0) {
-        user = dbUsers.find(u => u.id === parseInt(document));
-    }
-
-    if (!user) {
-        try {
-            const response = await fetch(`http://10.1.100.119:3050/users/${document}`);
-            if (response.ok) {
-                user = await response.json();
-            }
-        } catch (error) {
-            console.warn("JSONPlaceholder no disponible");
-        }
-    }
+    const documentValue = normalizeId(userDocumentInput.value);
+    const user = findUserByDocument(documentValue);
 
     if (user) {
-        currentUserId = Number(user.id);
+        currentUserId = normalizeId(user.id);
         userNameDisplay.textContent = user.name;
         userDocumentDisplay.textContent = user.id;
         userEmailDisplay.textContent = user.email;
@@ -203,9 +283,10 @@ async function handleUserSearch(event) {
         enableTaskForm();
         loadUserTasks(currentUserId);
     } else {
+        currentUserId = null;
         hideUserCard();
         disableTaskForm();
-        currentUserId = null;
+        clearTasksTable();
         showUserMessage("Usuario no encontrado en el sistema", true);
     }
 }
@@ -214,13 +295,15 @@ async function handleUserSearch(event) {
 // 4. MANEJO DE EVENTOS - REGISTRO DE TAREA
 // ============================================
 
-function handleTaskSubmit(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("handleTaskSubmit ejecutado");
-    
+// Procesa el envío del formulario de nueva tarea.
+async function handleTaskSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    clearAllErrors();
+
     if (!currentUserId) {
         showError(taskStatusError, "Debe buscar un usuario primero");
+        taskStatusSelect.classList.add("error");
         return;
     }
 
@@ -237,93 +320,79 @@ function handleTaskSubmit(e) {
         createdAt: new Date().toISOString()
     };
 
-    console.log("Nueva tarea:", newTask);
-
-    fetch("http://10.1.100.119:3050/tasks", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newTask),
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log("Tarea guardada en backend");
-        }
-    })
-    .catch(error => {
-        console.warn("Backend no disponible");
-    });
-
-    dbTasks.push(newTask);
-    addTaskToTable(newTask.id, newTask.title, newTask.description, newTask.status, currentUserId);
+    const savedTask = await saveTaskToBackend(newTask);
+    dbTasks.push(savedTask);
+    saveTasksToStorage();
+    addTaskToTable(savedTask);
     taskForm.reset();
-    
-    console.log("Tarea agregada a la tabla");
+    taskStatusSelect.value = "";
 }
 
+// Guarda todas las tareas en localStorage para persistencia local.
 function saveTasksToStorage() {
     try {
-        localStorage.setItem("tasks", JSON.stringify(dbTasks));
+        localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(dbTasks));
     } catch (error) {
-        console.warn("No se pudo guardar en localStorage");
+        console.warn("No se pudo guardar en localStorage", error);
     }
 }
 
-async function loadUserTasks(userId) {
-    console.log("Cargando tareas para usuario:", userId);
-    tasksTableBody.innerHTML = "";
-    
-    let allTasks = [];
-
+// Intenta guardar la tarea en el backend remoto y devuelve la tarea guardada.
+// Si falla, se devuelve la tarea original para uso local.
+async function saveTaskToBackend(task) {
     try {
-        const response = await fetch("http://10.1.100.119:3050/tasks");
-        if (response.ok) {
-            allTasks = await response.json();
-            console.log("Tareas del backend:", allTasks);
-            
-            if (Array.isArray(allTasks) && allTasks.length > 0) {
-                dbTasks = allTasks;
-            }
-        } else {
-            throw new Error("Backend no disponible");
-        }
-    } catch (error) {
-        console.warn("Backend no disponible, cargando desde localStorage");
-        const stored = localStorage.getItem("tasks");
-        if (stored) {
-            allTasks = JSON.parse(stored);
-        }
-        allTasks = [...dbTasks, ...allTasks.filter(t => !dbTasks.some(dt => dt.id === t.id))];
-    }
+        const response = await fetch(`${apiUrl}tasks`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(task)
+        });
 
-    console.log("Todas las tareas:", allTasks);
-    
-    const userIdNum = Number(userId);
-    const userTasks = allTasks.filter(t => 
-        Number(t.userId) === userIdNum || 
-        Number(t.id_usuario) === userIdNum || 
-        Number(t.user_id) === userIdNum
-    );
-    console.log("Tareas del usuario:", userTasks);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const saved = await response.json();
+        showUserMessage("Tarea guardada en el backend.");
+        return {
+            ...task,
+            id: normalizeId(saved.id || task.id),
+            userId: normalizeId(saved.userId || task.userId)
+        };
+    } catch (error) {
+        showUserMessage(`Error al guardar: ${error.message}. La tarea se guardó localmente.`, true);
+        return task;
+    }
+}
+
+// Lee las tareas almacenadas en localStorage.
+function loadSavedTasks() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEYS.TASKS);
+        return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.warn("No se pudo leer localStorage", error);
+        return [];
+    }
+}
+
+// Carga las tareas del usuario actual en la tabla de tareas.
+function loadUserTasks(userId) {
+    clearTasksTable();
+    const userTasks = getUserTasks(userId);
 
     if (userTasks.length === 0) {
         showEmptyState();
-    } else {
-        hideEmptyState();
-        userTasks.forEach(task => {
-            addTaskToTable(
-                task.id, 
-                task.title || task.titulo, 
-                task.description || task.descripcion || task.body, 
-                task.status || task.estado, 
-                userId
-            );
-        });
+        return;
     }
+
+    hideEmptyState();
+    userTasks.forEach(task => addTaskToTable(task));
 }
 
-function addTaskToTable(taskId, title, description, status, userId) {
+// Inserta una fila nueva en la tabla de tareas con los datos de la tarea.
+function addTaskToTable(task) {
     if (tasksTableBody.children.length === 0) {
         hideEmptyState();
     }
@@ -331,26 +400,28 @@ function addTaskToTable(taskId, title, description, status, userId) {
     const row = document.createElement("tr");
     row.classList.add("tasks__row");
 
-    const statusClass = getStatusClass(status);
-    const user = dbUsers.find(u => u.id === userId);
-    const userName = user ? user.name : `Usuario ${userId}`;
+    const statusClass = getStatusClass(task.status);
+    const user = dbUsers.find(u => normalizeId(u.id) === normalizeId(task.userId));
+    const userName = user ? user.name : `Usuario ${normalizeId(task.userId)}`;
 
     row.innerHTML = `
-        <td class="tasks__cell">${escapeHtml(title)}</td>
-        <td class="tasks__cell">${escapeHtml(description)}</td>
-        <td class="tasks__cell"><span class="task-status task-status--${statusClass}">${getStatusText(status)}</span></td>
+        <td class="tasks__cell">${escapeHtml(task.title)}</td>
+        <td class="tasks__cell">${escapeHtml(task.description)}</td>
+        <td class="tasks__cell"><span class="task-status task-status--${statusClass}">${getStatusText(task.status)}</span></td>
         <td class="tasks__cell">${escapeHtml(userName)}</td>
     `;
 
     tasksTableBody.appendChild(row);
 }
 
+// Escapa texto para evitar inyección de HTML en la tabla.
 function escapeHtml(text) {
     const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
 }
 
+// Devuelve la clase CSS correspondiente al estado de la tarea.
 function getStatusClass(status) {
     switch (status) {
         case "pendiente":
@@ -364,6 +435,7 @@ function getStatusClass(status) {
     }
 }
 
+// Devuelve el texto legible para cada estado de la tarea.
 function getStatusText(status) {
     switch (status) {
         case "pendiente":
@@ -377,6 +449,7 @@ function getStatusText(status) {
     }
 }
 
+// Maneja la edición de los campos de entrada para eliminar mensajes de error.
 function handleInputChange(event) {
     const inputField = event.target;
     const errorElement = inputField.nextElementSibling;
@@ -386,12 +459,18 @@ function handleInputChange(event) {
     }
 }
 
+// Limpia todas las filas de la tabla de tareas y muestra estado vacío.
+function clearTasksTable() {
+    tasksTableBody.innerHTML = "";
+    showEmptyState();
+}
+
 // ============================================
 // 5. REGISTRO DE EVENTOS
 // ============================================
 
 userSearchForm.addEventListener("submit", handleUserSearch);
-document.getElementById("submitTaskBtn").addEventListener("click", handleTaskSubmit);
+taskForm.addEventListener("submit", handleTaskSubmit);
 
 userDocumentInput.addEventListener("input", handleInputChange);
 taskTitleInput.addEventListener("input", handleInputChange);

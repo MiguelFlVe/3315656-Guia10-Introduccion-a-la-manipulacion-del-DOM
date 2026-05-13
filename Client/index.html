@@ -29,6 +29,7 @@
                                 name="userDocument"
                                 placeholder="Ingrese el documento"
                                 aria-required="true"
+                                aria-describedby="userDocumentError"
                                 autocomplete="off"
                             >
                             <span class="form__error" id="userDocumentError" aria-live="polite"></span>
@@ -64,6 +65,7 @@
                                     name="taskTitle"
                                     placeholder="Escribe el título"
                                     aria-required="true"
+                                    aria-describedby="taskTitleError"
                                 >
                                 <span class="form__error" id="taskTitleError" aria-live="polite"></span>
                             </div>
@@ -77,23 +79,24 @@
                                     rows="4"
                                     placeholder="Describe la tarea"
                                     aria-required="true"
+                                    aria-describedby="taskDescriptionError"
                                 ></textarea>
                                 <span class="form__error" id="taskDescriptionError" aria-live="polite"></span>
                             </div>
 
                             <div class="form__group">
                                 <label for="taskStatus" class="form__label">Estado de la tarea</label>
-                                <select id="taskStatus" class="form__input" name="taskStatus" aria-required="true">
+                                <select id="taskStatus" class="form__input" name="taskStatus" aria-required="true" aria-describedby="taskStatusError">
                                     <option value="">Selecciona un estado</option>
                                     <option value="pendiente">Pendiente</option>
                                     <option value="en-proceso">En proceso</option>
                                     <option value="completada">Completada</option>
                                 </select>
-<span class="form__error" id="taskStatusError" aria-live="polite"></span>
+                                <span class="form__error" id="taskStatusError" aria-live="polite"></span>
                             </div>
 
                             <div class="task-register__actions">
-                                <button type="button" class="btn btn--primary" id="submitTaskBtn">Registrar tarea</button>
+                                <button type="submit" class="btn btn--primary" id="submitTaskBtn">Registrar tarea</button>
                             </div>
                         </fieldset>
                     </form>

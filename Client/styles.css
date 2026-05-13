@@ -115,7 +115,8 @@ button {
 
 .header {
     padding: var(--spacing-2xl);
-    margin-bottom: var(--spacing-3xl);
+    margin-top: 20px;
+    margin-bottom: 20px;
     border-radius: calc(var(--radius-xl) * 1.1);
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(14, 165, 233, 0.95));
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -336,6 +337,11 @@ button {
     border: 1px solid rgba(148, 163, 184, 0.16);
 }
 
+.user-search__message {
+    min-height: 1.5rem;
+    margin-top: var(--spacing-md);
+}
+
 .user-card__title {
     margin-bottom: var(--spacing-sm);
     font-size: var(--font-size-lg);
@@ -449,6 +455,10 @@ button {
     padding: var(--spacing-md);
     color: var(--color-text-primary);
     vertical-align: top;
+}
+
+.tasks__body tr:hover {
+    background: rgba(79, 70, 229, 0.08);
 }
 
 .tasks__body td:nth-child(3) {
