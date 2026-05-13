@@ -1,10 +1,20 @@
 /**
  * ============================================
- * EJERCICIO DE MANIPULACIÓN DEL DOM
+ * SISTEMA DE GESTIÓN DE TAREAS POR USUARIO
  * ============================================
  *
- * Objetivo: Aplicar conceptos del DOM para seleccionar elementos,
- * responder a eventos y crear nuevos elementos dinámicamente.
+ * Objetivo: Buscar usuarios existentes en el servidor
+ * local y registrar tareas asociadas a cada uno,
+ * usando manipulación del DOM y fetch API con async/await.
+ *
+ * Flujo principal:
+ * 1. Usuario ingresa un ID (1-10) en el buscador
+ * 2. Se consulta el servidor GET /users/{id}
+ * 3. Si existe → se muestran sus datos y se habilita
+ *    el formulario de registro de tareas
+ * 4. Si no existe → mensaje "Usuario no encontrado"
+ * 5. Al registrar una tarea → POST /tasks y se agrega
+ *    una fila a la tabla dinámica
  *
  * Autor 1: [Miguel Flórez]
  * Autor 2: [Óscar Solano]
@@ -15,570 +25,550 @@
 // ============================================
 // 1. SELECCIÓN DE ELEMENTOS DEL DOM
 // ============================================
-
-/**
- * Seleccionamos los elementos del DOM que necesitamos manipular.
- * Usamos getElementById para obtener referencias a los elementos únicos.
- */
-
-// Formulario
-const messageForm = document.getElementById("messageForm");
-
-// Campos de entrada
-const userNameInput = document.getElementById("userName");
-const userMessageInput = document.getElementById("userMessage");
-
-// Botón de envío
-const submitBtn = document.getElementById("submitBtn");
-
-// Elementos para mostrar errores
-const userNameError = document.getElementById("userNameError");
-const userMessageError = document.getElementById("userMessageError");
-
-// Contenedor donde se mostrarán los mensajes
-const messagesContainer = document.getElementById("messagesContainer");
-
-// Estado vacío (mensaje que se muestra cuando no hay mensajes)
-const emptyState = document.getElementById("emptyState");
-
-// Contador de mensajes
-const messageCount = document.getElementById("messageCount");
-
-// Variable para llevar el conteo de mensajes
-let totalMessages = 0;
-
-// ============================================
-// 2. FUNCIONES AUXILIARES
+// Cada variable almacena una referencia directa a un
+// elemento del HTML. Esto evita tener que buscarlos
+// cada vez que los necesitamos.
 // ============================================
 
+// ---- Sección 1: Buscar Usuario ----
+const userSearchForm = document.getElementById("userSearchForm");
+const userIdInput = document.getElementById("userIdInput");
+const userIdError = document.getElementById("userIdError");
+const searchBtn = document.getElementById("searchBtn");
+
+const userResult = document.getElementById("userResult");
+const userAvatar = document.getElementById("userAvatar");
+const userName = document.getElementById("userName");
+const userEmail = document.getElementById("userEmail");
+
+const userNotFound = document.getElementById("userNotFound");
+
+// ---- Sección 2: Registrar Tarea ----
+const taskSection = document.getElementById("taskSection");
+const taskForm = document.getElementById("taskForm");
+const taskTitle = document.getElementById("taskTitle");
+const taskDescription = document.getElementById("taskDescription");
+const taskStatus = document.getElementById("taskStatus");
+const taskTitleError = document.getElementById("taskTitleError");
+const taskDescError = document.getElementById("taskDescError");
+const addTaskBtn = document.getElementById("addTaskBtn");
+
+// ---- Sección 3: Tabla de Tareas ----
+const tasksSection = document.getElementById("tasksSection");
+const tasksBody = document.getElementById("tasksBody");
+const taskCount = document.getElementById("taskCount");
+const tasksEmpty = document.getElementById("tasksEmpty");
+
+// ============================================
+// 2. VARIABLES DE ESTADO
+// ============================================
+// currentUser: almacena el objeto del usuario
+//   encontrado para asociar las tareas a él.
+// taskCounter: lleva la cuenta de tareas
+//   registradas para numerarlas en la tabla.
+// API_BASE: URL base del servidor local.
+// ============================================
+
+let currentUser = null;
+let taskCounter = 0;
+
+// URL base del servidor json-server
+// Se ejecuta en puerto 3000 por defecto
+const API_BASE = "http://192.168.2.12:3050";
+
+// ============================================
+// 3. FUNCIONES AUXILIARES
+// ============================================
+
 /**
- * Valida que un campo no esté vacío ni contenga solo espacios en blanco
- * @param {string} value - El valor a validar
- * @returns {boolean} - true si es válido, false si no lo es
+ * Valida que un campo no esté vacío.
+ * @param {string} value - El texto a validar
+ * @returns {boolean} - true si tiene contenido
  */
-
-// TODO1: Implementar validación
-// Pista: usa trim() para eliminar espacios al inicio y final
-// Retorna true si después de trim() el string tiene longitud > 0
-
 function isValidInput(value) {
     return value.trim().length > 0;
 }
-// * PREGUNTAS DE REFLEXIÓN:
-//  * 
-//  * 1. ¿Qué elemento del DOM estás seleccionando?
-//  *    R: Se seleccionan los campos del formulario como userName
-//  *    y userMessage para validar la información ingresada.
-//  * 
-//  * 2. ¿Qué evento provoca el cambio en la página?
-//  *    R: El cambio ocurre cuando el usuario escribe o envía
-//  *    información en el formulario.
-//  * 
-//  * 3. ¿Qué nuevo elemento se crea?
-//  *    R: En el TODO1 no se crea ningún elemento nuevo, solamente
-//  *    se valida el contenido ingresado por el usuario.
-//  * 
-//  * 4. ¿Dónde se inserta ese elemento dentro del DOM?
-//  *    R: En esta parte del ejercicio no se inserta ningún elemento
-//  *    en el DOM.
-//  * 
-//  * 5. ¿Qué ocurre en la página cada vez que repites la acción?
-//  *    R: Cada vez que se valida el campo, el sistema comprueba si
-//  *    el texto contiene caracteres válidos o solo espacios vacíos.
-//  */
-    
-/**
- * Muestra un mensaje de error en un elemento específico
- * @param {HTMLElement} errorElement - Elemento donde mostrar el error
- * @param {string} message - Mensaje de error a mostrar
- */
-
-
-// TODO2: Implementar función para mostrar error
-// Pista: asigna el mensaje al textContent del elemento
-
-function showError(errorElement, message) {
-    errorElement.textContent = message;
-}
-/**
- * PREGUNTAS DE REFLEXIÓN:
- * 
- * 1. ¿Qué elemento del DOM estás seleccionando?
- *    R: Se seleccionan los elementos de error como
- *    userNameError y userMessageError.
- * 
- * 2. ¿Qué evento provoca el cambio en la página?
- *    R: El cambio ocurre cuando la validación detecta
- *    un campo vacío y se muestra un mensaje de error.
- * 
- * 3. ¿Qué nuevo elemento se crea?
- *    R: En este TODO no se crea un nuevo elemento,
- *    solamente se modifica el contenido de un elemento existente.
- * 
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- *    R: El mensaje de error aparece dentro de los elementos span
- *    destinados para mostrar errores en el formulario.
- * 
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- *    R: El mensaje de error se actualiza dependiendo
- *    de la validación realizada en el formulario.
- */
-
 
 /**
- * Limpia el mensaje de error de un elemento específico
- * @param {HTMLElement} errorElement - Elemento del que limpiar el error
+ * Muestra un mensaje de error en un elemento.
+ * @param {HTMLElement} element - Donde mostrar el error
+ * @param {string} message - Texto del error
  */
-
-
-// TODO3: Implementar función para limpiar error
-// Pista: asigna un string vacío al textContent
-
-function clearError(errorElement) {
-    errorElement.textContent = "";
-}
-/**
- * PREGUNTAS DE REFLEXIÓN:
- * 
- * 1. ¿Qué elemento del DOM estás seleccionando?
- *    R: Se seleccionan los elementos donde se muestran
- *    los mensajes de error del formulario.
- * 
- * 2. ¿Qué evento provoca el cambio en la página?
- *    R: El cambio ocurre cuando el usuario corrige la información
- *    y el sistema limpia el mensaje de error.
- * 
- * 3. ¿Qué nuevo elemento se crea?
- *    R: En este TODO no se crea ningún elemento nuevo,
- *    solo se modifica un elemento existente.
- * 
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- *    R: No se inserta ningún elemento nuevo; se modifica
- *    el contenido de los elementos de error ya existentes.
- * 
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- *    R: Los mensajes de error desaparecen cuando se limpia
- *    el contenido del elemento correspondiente.
- */
-/**
- * Valida todos los campos del formulario
- * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
- */
-
-
-// TODO4: Implementar validación completa del formulario
-// 1. Obtener los valores de los inputs usando .value
-// 2. Crear una variable para saber si el formulario es válido (inicialmente true)
-// 3. Validar el campo de nombre de usuario
-//    - Si no es válido, mostrar error y cambiar la variable a false
-//    - Si es válido, limpiar el error
-// 4. Validar el campo de mensaje
-//    - Si no es válido, mostrar error y cambiar la variable a false
-//    - Si es válido, limpiar el error
-// 5. Retornar si el formulario es válido o no
-
-function validateForm() {
-    const userName = userNameInput.value;
-    const userMessage = userMessageInput.value;
-
-    let isValid = true;
-
-    // Validar nombre de usuario
-    if (!isValidInput(userName)) {
-        showError(userNameError, "El nombre es obligatorio");
-        userNameInput.classList.add("error");
-        isValid = false;
-    } else {
-        clearError(userNameError);
-        userNameInput.classList.remove("error");
-    }
-
-    // Validar mensaje
-    if (!isValidInput(userMessage)) {
-        showError(messageError, "El mensaje es obligatorio");
-        userMessageInput.classList.add("error");
-        isValid = false;
-    } else {
-        clearError(messageError);
-        userMessageInput.classList.remove("error");
-    }
-
-    return isValid;
-}
-/**
- * PREGUNTAS DE REFLEXIÓN:
- * 
- * 1. ¿Qué elemento del DOM estás seleccionando?
- *    R: Se seleccionan los campos del formulario,
- *    los elementos de error y los inputs del usuario.
- * 
- * 2. ¿Qué evento provoca el cambio en la página?
- *    R: El cambio ocurre cuando el usuario intenta
- *    enviar el formulario y se ejecuta la validación.
- * 
- * 3. ¿Qué nuevo elemento se crea?
- *    R: En este TODO no se crean elementos nuevos,
- *    solo se validan y modifican elementos existentes.
- * 
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- *    R: Los mensajes de error se muestran dentro
- *    de los elementos span del formulario.
- * 
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- *    R: El formulario verifica nuevamente los datos,
- *    mostrando o limpiando errores dependiendo
- *    de la información ingresada.
- */
-// Ejemplo de estructura:
-/*
-    const userName = userNameInput.value;
-    const userMessage = userMessageInput.value;
-    let isValid = true;
-    
-    // Validar nombre
-    if (!isValidInput(userName)) {
-        // Mostrar error
-        // Agregar clase 'error' al input
-        isValid = false;
-    } else {
-        // Limpiar error
-        // Remover clase 'error' del input
-    }
-    
-    // Validar mensaje (estructura similar)
-    
-    return isValid;
-    */
-
-/**
- * Obtiene la fecha y hora actual formateada
- * @returns {string} - Fecha y hora en formato legible
- */
-function getCurrentTimestamp() {
-    const now = new Date();
-    const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    };
-    return now.toLocaleDateString("es-ES", options);
+function showError(element, message) {
+    element.textContent = message;
 }
 
 /**
- * Obtiene las iniciales de un nombre
+ * Limpia el mensaje de error de un elemento.
+ * @param {HTMLElement} element - Elemento a limpiar
+ */
+function clearError(element) {
+    element.textContent = "";
+}
+
+/**
+ * Obtiene las iniciales de un nombre.
+ * Ej: "Ana Torres" → "AT"
  * @param {string} name - Nombre completo
  * @returns {string} - Iniciales en mayúsculas
  */
-
-
-// TODO5: Implementar función para obtener iniciales
-// Pista:
-// 1. Separar el nombre por espacios usando split(' ')
-// 2. Tomar la primera letra de cada palabra
-// 3. Unirlas y convertirlas a mayúsculas
-// 4. Si solo hay una palabra, retornar las dos primeras letras
-
 function getInitials(name) {
     const words = name.trim().split(" ");
-
-    // Si solo hay una palabra
     if (words.length === 1) {
         return words[0].slice(0, 2).toUpperCase();
     }
-
-    // Tomar la primera letra de cada palabra
-    const initials = words[0][0] + words[1][0];
-
-    return initials.toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
 }
-/**
- * PREGUNTAS DE REFLEXIÓN (TODO5 - getInitials):
- *
- * 1. ¿Qué elemento del DOM estás seleccionando?
- * R: En este TODO no se selecciona ningún elemento del DOM, ya que solo se trabaja con una función que recibe un valor (string).
- *
- * 2. ¿Qué evento provoca el cambio en la página?
- * R: No hay un evento del DOM directamente en este TODO. La función se ejecuta cuando se llama desde otra parte del código, por ejemplo al crear un mensaje.
- *
- * 3. ¿Qué nuevo elemento se crea?
- * R: No se crea un elemento del DOM en este TODO. Solo se genera un string con las iniciales del nombre del usuario.
- *
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- * R: No se inserta directamente en el DOM aquí. El resultado (iniciales) se usa después al crear el avatar dentro del mensaje en el DOM.
- *
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- * R: Cada vez que se ejecuta la función, se generan las iniciales del nombre ingresado y estas se muestran en el avatar del mensaje dentro del chat.
-
 
 /**
- * Actualiza el contador de mensajes
+ * Actualiza el contador de tareas en el encabezado.
+ * Muestra "X tareas" o "1 tarea" según la cantidad.
  */
-// TODO6: Implementar actualización del contador
-// Pista: Usa template literals para crear el texto
-// Formato: "X mensaje(s)" o "X mensajes"
-/**
- * Oculta el estado vacío (mensaje cuando no hay mensajes)
- */
-
-function updateMessageCount() {
-    const count = messages.length;
-
-    messageCount.textContent = `${count} ${
-        count === 1 ? "mensaje" : "mensajes"
-    }`;
+function updateTaskCount() {
+    const count = taskCounter;
+    taskCount.textContent = `${count} ${count === 1 ? "tarea" : "tareas"}`;
 }
+
+// ============================================
+// 4. BÚSQUEDA DE USUARIO
+// ============================================
+
 /**
- * PREGUNTAS DE REFLEXIÓN (TODO6 - updateMessageCount):
- *
- * 1. ¿Qué elemento del DOM estás seleccionando?
- * R: Se selecciona el elemento messageCount del DOM, que es donde se muestra el número total de mensajes.
- *
- * 2. ¿Qué evento provoca el cambio en la página?
- * R: El cambio ocurre cada vez que se agrega un nuevo mensaje al chat, normalmente después del evento submit del formulario.
- *
- * 3. ¿Qué nuevo elemento se crea?
- * R: No se crea ningún nuevo elemento del DOM en este TODO. Solo se actualiza el texto del contador existente.
- *
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- * R: No se inserta un nuevo elemento. Se actualiza directamente el contenido del elemento messageCount en el DOM.
- *
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- * R: Cada vez que se envía un mensaje, el contador se actualiza dinámicamente mostrando cuántos mensajes existen,
- * cambiando entre "mensaje" o "mensajes" según la cantidad.
+ * Busca un usuario en el servidor por su ID.
+ * 
+ * async/await:
+ * - async permite usar await dentro de la función
+ * - await pausa la ejecución hasta que fetch
+ *   recibe la respuesta del servidor
+ * - fetch lanza una petición HTTP GET al endpoint
+ * 
+ * @param {number} id - ID del usuario (1-10)
+ * @returns {object|null} - Datos del usuario o null
  */
+async function buscarUsuario(id) {
+    try {
+        // fetch devuelve una Promise (promesa).
+        // await espera a que el servidor responda.
+        const respuesta = await fetch(`${API_BASE}/users/${id}`);
 
+        // Si el servidor responde con 404 (no encontrado)
+        // o cualquier código que no sea 200-299
+        if (!respuesta.ok) {
+            return null;
+        }
 
-// TODO7: Implementar función para ocultar el estado vacío
-    // Pista: Agrega la clase 'hidden' al elemento emptyState
-/**
- * Muestra el estado vacío (mensaje cuando no hay mensajes)
- */   
-function hideEmptyState() {
-    emptyState.classList.add("hidden");
+        // Convertimos la respuesta a JSON (otra Promise)
+        const usuario = await respuesta.json();
+        return usuario;
+
+    } catch (error) {
+        // Si hay un error de red (servidor apagado,
+        // sin internet, etc.) capturamos aquí
+        console.error("Error al buscar usuario:", error);
+        return null;
+    }
 }
+
 /**
- * PREGUNTAS DE REFLEXIÓN (TODO7 - hideEmptyState):
- *
- * 1. ¿Qué elemento del DOM estás seleccionando?
- * R: Se está utilizando el elemento emptyState, que representa el mensaje que aparece cuando no hay mensajes en el chat.
- *
- * 2. ¿Qué evento provoca el cambio en la página?
- * R: El cambio ocurre cuando se agrega el primer mensaje al chat, generalmente después del evento submit del formulario.
- *
- * 3. ¿Qué nuevo elemento se crea?
- * R: No se crea ningún nuevo elemento del DOM en este TODO. Solo se modifica un elemento existente.
- *
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- * R: No se inserta nada nuevo. Se modifica el elemento emptyState agregándole la clase 'hidden' dentro del DOM.
- *
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- * R: Cada vez que se envía un mensaje, el estado vacío se oculta para que deje de mostrarse el mensaje de “no hay mensajes” cuando ya existen mensajes en el chat.
+ * Limpia la tabla de tareas y resetea el contador.
+ * Se usa cuando se cambia de usuario.
  */
-
-
-// TODO8: Implementar función para mostrar el estado vacío
-// Pista: Remueve la clase 'hidden' del elemento emptyState   
-
-function showEmptyState() {
-    emptyState.classList.remove("hidden");
+function limpiarTabla() {
+    tasksBody.innerHTML = "";
+    taskCounter = 0;
+    updateTaskCount();
+    tasksEmpty.classList.remove("hidden");
 }
+
 /**
- * PREGUNTAS DE REFLEXIÓN (TODO8 - showEmptyState):
- *
- * 1. ¿Qué elemento del DOM estás seleccionando?
- * R: Se está utilizando el elemento emptyState, que representa el mensaje que aparece cuando no hay mensajes en el chat.
- *
- * 2. ¿Qué evento provoca el cambio en la página?
- * R: El cambio ocurre cuando el chat queda sin mensajes, por ejemplo si se elimina el último mensaje o no hay mensajes en el sistema.
- *
- * 3. ¿Qué nuevo elemento se crea?
- * R: No se crea ningún elemento nuevo del DOM en este TODO. Solo se manipula un elemento ya existente.
- *
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- * R: No se inserta ningún elemento nuevo. Se modifica el elemento emptyState eliminando la clase 'hidden' para que vuelva a mostrarse en su ubicación original.
- *
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- * R: Cada vez que se ejecuta esta función, vuelve a aparecer el mensaje de estado vacío indicando que no hay mensajes en el chat.
+ * Carga las tareas existentes de un usuario desde el servidor.
+ * GET /tasks?userId=:id devuelve todas las tareas asociadas
+ * a ese usuario. Luego las renderiza en la tabla.
+ * 
+ * @param {number} userId - ID del usuario
  */
-    
+async function cargarTareasDeUsuario(userId) {
+    try {
+        const respuesta = await fetch(`${API_BASE}/tasks?userId=${userId}`);
 
+        if (!respuesta.ok) {
+            console.error("Error al cargar tareas:", respuesta.status);
+            return;
+        }
 
-// ============================================
-// 3. CREACIÓN DE ELEMENTOS
-// ============================================
+        const tareas = await respuesta.json();
+
+        // Renderizar cada tarea existente en la tabla
+        tareas.forEach(tarea => {
+            // json-server devuelve { id, title, body, status, userId }
+            // pero nosotros guardamos { title, description, status, userId }
+            // Normalizamos: si viene "body" lo usamos como description
+            const tareaNormalizada = {
+                title: tarea.title,
+                description: tarea.description || tarea.body || "",
+                status: tarea.status || "pendiente"
+            };
+            agregarFilaATabla(tareaNormalizada);
+        });
+
+    } catch (error) {
+        console.error("Error de red al cargar tareas:", error);
+    }
+}
 
 /**
- * Crea un nuevo elemento de mensaje en el DOM
- * @param {string} userName - Nombre del usuario
- * @param {string} message - Contenido del mensaje
+ * Muestra los datos del usuario en la interfaz.
+ * También habilita las secciones de tareas y carga
+ * las tareas existentes del usuario.
+ * 
+ * @param {object} user - Objeto del usuario
  */
-import { createMessageElement } from './index.js'
-    // TODO9: Implementar la creación de un nuevo mensaje
-    // PASO 1: Crear el contenedor principal del mensaje
-    // Pista: document.createElement('div')
-    // Asignar la clase 'message-card'
-    // PASO 2: Crear la estructura HTML del mensaje
-    // Puedes usar innerHTML con la siguiente estructura:
-    /*
-    <div class="message-card__header">
-        <div class="message-card__user">
-            <div class="message-card__avatar">[INICIALES]</div>
-            <span class="message-card__username">[NOMBRE]</span>
-        </div>
-        <span class="message-card__timestamp">[FECHA]</span>
-    </div>
-    <div class="message-card__content">[MENSAJE]</div>
-    */
-    // PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
-    // Pista: messagesContainer.appendChild(nuevoElemento)
-    // O usar insertBefore para agregarlo al principio
-    // PASO 4: Incrementar el contador de mensajes
-    // PASO 5: Actualizar el contador visual
-    // PASO 6: Ocultar el estado vacío si está visible
+function mostrarUsuario(user) {
+    // Asignamos el avatar con las iniciales
+    userAvatar.textContent = getInitials(user.name);
 
-// ============================================
-// 4. MANEJO DE EVENTOS
-// ============================================
+    // Asignamos nombre y email a los spans
+    userName.textContent = user.name;
+    userEmail.textContent = user.email;
+
+    // Ocultamos el mensaje de error por si estaba visible
+    userNotFound.classList.add("hidden");
+
+    // Mostramos el resultado con animación
+    userResult.classList.remove("hidden");
+
+    // Habilitamos las secciones de tareas
+    taskSection.classList.remove("hidden");
+    tasksSection.classList.remove("hidden");
+
+    // Limpiar la tabla antes de cargar tareas nuevas
+    limpiarTabla();
+
+    // Cargar las tareas existentes del usuario
+    cargarTareasDeUsuario(user.id);
+}
 
 /**
- * Maneja el evento de envío del formulario
- * @param {Event} event - Evento del formulario
+ * Muestra el mensaje de "Usuario no encontrado"
+ * y oculta el resultado anterior.
  */
-import { handleFormSubmit } from "./index.js";
-    // TODO10: Implementar el manejador del evento submit
-    // PASO 1: Prevenir el comportamiento por defecto del formulario
-    // Pista: event.preventDefault()
-    // PASO 2: Validar el formulario
-    // Si no es válido, detener la ejecución (return)
-    // PASO 3: Obtener los valores de los campos
-    // PASO 4: Crear el nuevo elemento de mensaje
-    // Llamar a createMessageElement con los valores obtenidos
-    // PASO 5: Limpiar el formulario
-    // Pista: messageForm.reset()
-    // PASO 6: Limpiar los errores
-    // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
-    // Pista: userNameInput.focus()
+function mostrarErrorUsuario() {
+    userResult.classList.add("hidden");
+    taskSection.classList.add("hidden");
+    tasksSection.classList.add("hidden");
+    userNotFound.classList.remove("hidden");
+}
+
+// ============================================
+// 5. REGISTRO DE TAREAS
+// ============================================
 
 /**
- * Limpia los errores cuando el usuario empieza a escribir
+ * Envía una nueva tarea al servidor mediante POST.
+ * 
+ * fetch con método POST:
+ * - method: "POST" indica que vamos a CREAR un recurso
+ * - headers: le decimos al servidor que enviamos JSON
+ * - body: los datos convertidos a string JSON
+ * 
+ * @param {object} tarea - { title, description, status, userId }
+ * @returns {object|null} - Tarea creada o null si hay error
  */
-import { handleInputChange } from './index.js'
-    // TODO11: Implementar limpieza de errores al escribir
-    // Esta función se ejecuta cuando el usuario escribe en un campo
-    // Debe limpiar el error de ese campo específico
+async function registrarTareaEnServidor(tarea) {
+    try {
+        const respuesta = await fetch(`${API_BASE}/tasks`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(tarea)
+        });
 
-// ============================================
-// 5. REGISTRO DE EVENTOS
-// ============================================
+        if (!respuesta.ok) {
+            console.error("Error al registrar tarea:", respuesta.status);
+            return null;
+        }
+
+        const tareaCreada = await respuesta.json();
+        return tareaCreada;
+
+    } catch (error) {
+        console.error("Error de red al registrar tarea:", error);
+        return null;
+    }
+}
 
 /**
- * Aquí registramos todos los event listeners
+ * Valida los campos del formulario de tareas.
+ * @returns {boolean} - true si todos son válidos
  */
+function validarFormularioTarea() {
+    let valido = true;
 
-// TODO12: Registrar el evento 'submit' en el formulario
-// Pista: messageForm.addEventListener('submit', handleFormSubmit);
+    // Validar título
+    if (!isValidInput(taskTitle.value)) {
+        showError(taskTitleError, "El título es obligatorio");
+        taskTitle.classList.add("error");
+        valido = false;
+    } else {
+        clearError(taskTitleError);
+        taskTitle.classList.remove("error");
+    }
 
-messageForm.addEventListener('submit', handleFormSubmit);
+    // Validar descripción
+    if (!isValidInput(taskDescription.value)) {
+        showError(taskDescError, "La descripción es obligatoria");
+        taskDescription.classList.add("error");
+        valido = false;
+    } else {
+        clearError(taskDescError);
+        taskDescription.classList.remove("error");
+    }
 
-/**
- * PREGUNTAS DE REFLEXIÓN TODO12:
- *
- * 1. ¿Qué elemento del DOM estás seleccionando?
- *    R: Se está seleccionando el formulario con id 'messageForm' para manejar su evento de envío.
- *
- * 2. ¿Qué evento provoca el cambio en la página?
- *    R: El evento de envío del formulario (submit).
- *
- * 3. ¿Qué nuevo elemento se crea?
- *    R: Se crea un nuevo elemento de mensaje.
- *
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- *    R: El nuevo mensaje se inserta dentro del contenedor con id 'messagesContainer'.
- *
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- *    R: Cada vez que se envía el formulario, se agrega un nuevo mensaje al contenedor, se incrementa el contador de mensajes, y si era el primer mensaje, se oculta el estado vacío. Además, el formulario se limpia para permitir ingresar un nuevo mensaje.
- */ 
-
-// TODO13: Registrar eventos 'input' en los campos para limpiar errores al escribir
-// Pista: userNameInput.addEventListener('input', handleInputChange);
-// Pista: userMessageInput.addEventListener('input', handleInputChange);
-
-userNameInput.addEventListener('input', handleInputChange);
-
-userMessageInput.addEventListener('input', handleInputChange);
+    return valido;
+}
 
 /**
- * PREGUNTAS DE REFLEXIÓN:
- *
- * 1. ¿Qué elemento del DOM estás seleccionando?
- *    R: Se selecciona el formulario.
- *
- * 2. ¿Qué evento provoca el cambio en la página?
- *    R: El ingreso o edición de caracteres en los campos del formulario
- *
- * 3. ¿Qué nuevo elemento se crea?
- *    R: No se crea un elemento nuevo
- *
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- *    R: No se inserta un elemento nuevo
- *
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- *    R: Se muestra una guía visual para los errores en los caracteres ingresados
- */ 
-
-// ============================================
-// 6. REFLEXIÓN Y DOCUMENTACIÓN
-// ============================================
-
-/**
- * PREGUNTAS DE REFLEXIÓN:
- *
- * 1. ¿Qué elemento del DOM estás seleccionando?
- *    R:
- *
- * 2. ¿Qué evento provoca el cambio en la página?
- *    R:
- *
- * 3. ¿Qué nuevo elemento se crea?
- *    R:
- *
- * 4. ¿Dónde se inserta ese elemento dentro del DOM?
- *    R:
- *
- * 5. ¿Qué ocurre en la página cada vez que repites la acción?
- *    R:
+ * Crea una fila <tr> en la tabla de tareas usando
+ * createElement + appendChild (sin innerHTML directo).
+ * 
+ * createElement crea un nuevo elemento HTML en memoria.
+ * appendChild lo inserta dentro de otro elemento existente.
+ * 
+ * @param {object} tarea - { title, description, status }
  */
+function agregarFilaATabla(tarea) {
+    // Incrementamos el contador global de tareas
+    taskCounter++;
+
+    // Ocultamos el mensaje vacío si está visible
+    tasksEmpty.classList.add("hidden");
+
+    // ---- Crear la fila (<tr>) ----
+    const fila = document.createElement("tr");
+
+    // ---- Columna 1: Número (#) ----
+    const celdaNum = document.createElement("td");
+    celdaNum.textContent = taskCounter;
+    fila.appendChild(celdaNum);
+
+    // ---- Columna 2: Título ----
+    const celdaTitulo = document.createElement("td");
+    celdaTitulo.textContent = tarea.title;
+    fila.appendChild(celdaTitulo);
+
+    // ---- Columna 3: Descripción ----
+    const celdaDesc = document.createElement("td");
+    celdaDesc.textContent = tarea.description;
+    fila.appendChild(celdaDesc);
+
+    // ---- Columna 4: Estado (con badge de color) ----
+    const celdaEstado = document.createElement("td");
+
+    // Creamos un span para el badge de estado
+    const badge = document.createElement("span");
+    badge.classList.add("task-status");
+
+    // Asignamos la clase de color según el estado
+    // task-status--pendiente, task-status--en_progreso, task-status--completada
+    badge.classList.add(`task-status--${tarea.status}`);
+
+    // Texto legible del estado
+    const etiquetas = {
+        pendiente: "Pendiente",
+        en_progreso: "En progreso",
+        completada: "Completada"
+    };
+    badge.textContent = etiquetas[tarea.status] || tarea.status;
+
+    celdaEstado.appendChild(badge);
+    fila.appendChild(celdaEstado);
+
+    // ---- Insertar la fila en el <tbody> ----
+    tasksBody.appendChild(fila);
+
+    // Actualizar el contador visual de tareas
+    updateTaskCount();
+}
 
 // ============================================
-// 7. INICIALIZACIÓN (OPCIONAL)
+// 6. MANEJADORES DE EVENTOS
 // ============================================
 
 /**
- * Esta función se ejecuta cuando el DOM está completamente cargado
+ * Manejador del formulario de búsqueda de usuario.
+ * 
+ * event.preventDefault() evita que el navegador
+ * recargue la página al enviar el formulario.
+ * Sin esto, perderíamos todo el estado de la app.
  */
+async function manejarBusquedaUsuario(event) {
+    // Evita la recarga de la página
+    event.preventDefault();
+
+    // Obtener el ID ingresado por el usuario
+    const id = userIdInput.value.trim();
+
+    // Validar que el ID no esté vacío
+    if (!isValidInput(id)) {
+        showError(userIdError, "Ingresa un ID válido (1-10)");
+        userIdInput.classList.add("error");
+        return;
+    }
+
+    // Validar que el ID esté entre 1 y 10
+    const idNum = parseInt(id, 10);
+    if (idNum < 1 || idNum > 10) {
+        showError(userIdError, "El ID debe estar entre 1 y 10");
+        userIdInput.classList.add("error");
+        return;
+    }
+
+    // Limpiar errores del campo
+    clearError(userIdError);
+    userIdInput.classList.remove("error");
+
+    // Mostrar estado de carga (opcional)
+    searchBtn.textContent = "Buscando...";
+    searchBtn.disabled = true;
+
+    // ---- Buscar usuario en el servidor ----
+    // await: espera a que la petición termine
+    const usuario = await buscarUsuario(idNum);
+
+    // Restaurar el botón
+    searchBtn.innerHTML = `<span class="btn__text">Buscar Usuario</span> <span class="btn__icon">&#128269;</span>`;
+    searchBtn.disabled = false;
+
+    if (usuario) {
+        // ✅ Usuario encontrado
+        currentUser = usuario;
+        mostrarUsuario(usuario);
+    } else {
+        // ❌ Usuario no encontrado
+        currentUser = null;
+        mostrarErrorUsuario();
+    }
+}
+
+/**
+ * Manejador del formulario de registro de tareas.
+ * Crea una tarea, la envía al servidor y la agrega a la tabla.
+ */
+async function manejarRegistroTarea(event) {
+    // ❌ Evita la recarga de la página
+    event.preventDefault();
+
+    // Validar que haya un usuario seleccionado
+    if (!currentUser) {
+        alert("Primero debes buscar un usuario");
+        return;
+    }
+
+    // Validar los campos del formulario
+    if (!validarFormularioTarea()) {
+        return;
+    }
+
+    // Construir el objeto de la tarea
+    const nuevaTarea = {
+        title: taskTitle.value.trim(),
+        description: taskDescription.value.trim(),
+        status: taskStatus.value,
+        userId: currentUser.id
+    };
+
+    // Deshabilitar botón durante el envío
+    addTaskBtn.textContent = "Registrando...";
+    addTaskBtn.disabled = true;
+
+    // Enviar la tarea al servidor (POST)
+    const tareaCreada = await registrarTareaEnServidor(nuevaTarea);
+
+    // Restaurar botón
+    addTaskBtn.innerHTML = `<span class="btn__text">Agregar Tarea</span> <span class="btn__icon">+</span>`;
+    addTaskBtn.disabled = false;
+
+    if (tareaCreada) {
+        // ✅ Tarea registrada correctamente
+        // Agregar fila a la tabla con createElement
+        agregarFilaATabla(nuevaTarea);
+
+        // Limpiar el formulario para seguir agregando tareas
+        taskForm.reset();
+
+        // Enfocar el primer campo para escribir rápido
+        taskTitle.focus();
+    } else {
+        alert("Error al registrar la tarea. ¿El servidor está corriendo?");
+    }
+}
+
+/**
+ * Limpia los errores cuando el usuario empieza a escribir.
+ * Esto mejora la experiencia: el error desaparece
+ * mientras el usuario corrige el campo.
+ * 
+ * @param {Event} event - Evento 'input' del campo
+ */
+function limpiarErrorAlEscribir(event) {
+    const input = event.target;
+
+    // Limpiamos la clase error visual
+    input.classList.remove("error");
+
+    // Limpiamos el mensaje de error asociado
+    // Según el ID del input, buscamos su error correspondiente
+    if (input.id === "userIdInput") {
+        clearError(userIdError);
+    } else if (input.id === "taskTitle") {
+        clearError(taskTitleError);
+    } else if (input.id === "taskDescription") {
+        clearError(taskDescError);
+    }
+}
+
+// ============================================
+// 7. REGISTRO DE EVENT LISTENERS
+// ============================================
+// Los event listeners "escuchan" las acciones del
+// usuario (clic, tecleo, envío de formulario) y
+// ejecutan una función cuando ocurren.
+// ============================================
+
+// ---- Formulario de búsqueda de usuario ----
+// 'submit' se dispara al hacer clic en "Buscar Usuario"
+// o presionar Enter dentro del campo de ID
+userSearchForm.addEventListener("submit", manejarBusquedaUsuario);
+
+// ---- Formulario de registro de tareas ----
+taskForm.addEventListener("submit", manejarRegistroTarea);
+
+// ---- Limpieza de errores al escribir ----
+// Cada vez que el usuario escribe en estos campos,
+// se limpia el error automáticamente
+userIdInput.addEventListener("input", limpiarErrorAlEscribir);
+taskTitle.addEventListener("input", limpiarErrorAlEscribir);
+taskDescription.addEventListener("input", limpiarErrorAlEscribir);
+
+// ============================================
+// 8. INICIALIZACIÓN
+// ============================================
+// DOMContentLoaded se ejecuta cuando todo el HTML
+// ha sido cargado y procesado por el navegador.
+// ============================================
+
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ DOM completamente cargado");
-    console.log("📝 Aplicación de registro de mensajes iniciada");
+    console.log("📋 Sistema de gestión de tareas iniciado");
+    console.log(`🔗 Servidor esperado en: ${API_BASE}`);
 
-    // Aquí puedes agregar cualquier inicialización adicional
-    // Por ejemplo, cargar mensajes guardados del localStorage
+    // Verificación opcional: mostrar si el servidor responde
+    fetch(`${API_BASE}/users`)
+        .then(res => {
+            if (res.ok) console.log("✅ Servidor conectado");
+        })
+        .catch(() => {
+            console.warn("⚠️ Servidor no disponible. Ejecuta: npm run dev");
+        });
 });
-
-// ============================================
-// 8. FUNCIONALIDADES ADICIONALES (BONUS)
-// ============================================
-
-/**
- * RETOS ADICIONALES OPCIONALES:
- *
- * 1. Agregar un botón para eliminar mensajes individuales
- * 2. Implementar localStorage para persistir los mensajes
- * 3. Agregar un contador de caracteres en el textarea
- * 4. Implementar un botón para limpiar todos los mensajes
- * 5. Agregar diferentes colores de avatar según el nombre del usuario
- * 6. Permitir editar mensajes existentes
- * 7. Agregar emojis o reacciones a los mensajes
- * 8. Implementar búsqueda/filtrado de mensajes
- */

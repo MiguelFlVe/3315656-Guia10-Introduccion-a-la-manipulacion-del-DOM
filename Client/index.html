@@ -1,86 +1,282 @@
 <!DOCTYPE html>
+<!-- ============================================
+     SISTEMA DE GESTIÓN DE TAREAS POR USUARIO
+     ============================================
+     Proyecto: SENA - Análisis y Desarrollo de Software
+     Objetivo: Buscar usuarios existentes y registrar
+     tareas asociadas usando DOM + fetch API.
+     ============================================ -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!--
+      Viewport: permite que la página se adapte
+      correctamente a dispositivos móviles
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Mensajes - Ejercicio DOM</title>
+    <title>Gestión de Tareas - DOM</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <!-- ============================================
+         CONTENEDOR PRINCIPAL
+         ============================================
+         Centra todo el contenido y le da un ancho
+         máximo para que se vea bien en pantallas
+         grandes.
+         ============================================ -->
     <div class="container">
-        <!-- Encabezado principal -->
+
+        <!-- ============================================
+             HEADER / ENCABEZADO
+             ============================================ -->
         <header class="header">
-            <h1 class="header__title">Registro de Mensajes</h1>
-            <p class="header__subtitle">Practica la manipulación del DOM en tiempo real</p>
+            <h1 class="header__title">Gesti&oacute;n de Tareas</h1>
+            <p class="header__subtitle">
+                Busca un usuario y registra sus tareas sin recargar la p&aacute;gina
+            </p>
         </header>
 
-        <!-- Formulario de entrada -->
-        <section class="form-section">
+        <!-- ============================================
+             SECCIÓN 1: BUSCAR USUARIO
+             ============================================
+             Formulario para buscar un usuario por su ID
+             numérico (1 al 10). Los datos se obtienen
+             del servidor local mediante fetch API.
+             ============================================ -->
+        <section class="form-section" aria-label="Buscar usuario">
             <div class="card">
-                <h2 class="card__title">Nuevo Mensaje</h2>
-                
-                <form id="messageForm" class="form" novalidate>
+                <h2 class="card__title">Buscar Usuario</h2>
+
+                <!--
+                  Contenedor flex: robot a la izquierda,
+                  formulario y resultados a la derecha
+                -->
+                <div class="search-layout">
+
+                    <!-- Robot decorativo (lado izquierdo) -->
+                    <div class="search-robot" aria-hidden="true">
+                        <div class="robot">
+                            <div class="robot__antenna">
+                                <div class="robot__signal"></div>
+                            </div>
+                            <div class="robot__head">
+                                <div class="robot__eye robot__eye--left"></div>
+                                <div class="robot__eye robot__eye--right"></div>
+                                <div class="robot__mouth"></div>
+                            </div>
+                            <div class="robot__body">
+                                <div class="robot__chest"></div>
+                                <div class="robot__arm robot__arm--left"></div>
+                                <div class="robot__arm robot__arm--right"></div>
+                            </div>
+                            <div class="robot__base"></div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido del buscador (lado derecho) -->
+                    <div class="search-content">
+
+                        <form id="userSearchForm" class="form" novalidate>
+
+                            <div class="form__group">
+                                <label for="userIdInput" class="form__label">
+                                    ID del usuario
+                                </label>
+                                <input
+                                    type="number"
+                                    id="userIdInput"
+                                    class="form__input"
+                                    placeholder="Ingresa ID del 1 al 10"
+                                    min="1"
+                                    max="10"
+                                    aria-required="true"
+                                    aria-describedby="userIdError"
+                                >
+                                <span class="form__error" id="userIdError"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn--primary" id="searchBtn">
+                                <span class="btn__text">Buscar Usuario</span>
+                                <span class="btn__icon">&#128269;</span>
+                            </button>
+                        </form>
+
+                        <div id="userResult" class="user-result hidden" aria-live="polite">
+                            <div class="user-result__avatar" id="userAvatar">AT</div>
+                            <div class="user-result__info">
+                                <p class="user-result__name">
+                                    <span class="user-result__label">Nombre:</span>
+                                    <span id="userName"></span>
+                                </p>
+                                <p class="user-result__email">
+                                    <span class="user-result__label">Email:</span>
+                                    <span id="userEmail"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="userNotFound" class="user-not-found hidden" role="alert">
+                            <svg class="user-not-found__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="15" y1="9" x2="9" y2="15"/>
+                                <line x1="9" y1="9" x2="15" y2="15"/>
+                            </svg>
+                            <p>Usuario no encontrado</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SECCIÓN 2: REGISTRAR TAREA
+             ============================================
+             Formulario para crear una nueva tarea asociada
+             al usuario encontrado. Solo se habilita cuando
+             existe un usuario activo (currentUser).
+             ============================================ -->
+        <section id="taskSection" class="form-section hidden" aria-label="Registrar tarea">
+            <div class="card">
+                <h2 class="card__title">Registrar Tarea</h2>
+
+                <form id="taskForm" class="form" novalidate>
+
+                    <!-- Campo: Título de la tarea -->
                     <div class="form__group">
-                        <label for="userName" class="form__label">
-                            Nombre de usuario
+                        <label for="taskTitle" class="form__label">
+                            T&iacute;tulo de la tarea
                         </label>
-                        <input 
-                            type="text" 
-                            id="userName" 
-                            class="form__input" 
-                            placeholder="Ingresa tu nombre"
+                        <input
+                            type="text"
+                            id="taskTitle"
+                            class="form__input"
+                            placeholder="Ej: Revisar documentaci&oacute;n"
                             aria-required="true"
+                            aria-describedby="taskTitleError"
                         >
-                        <span class="form__error" id="userNameError"></span>
+                        <span class="form__error" id="taskTitleError"></span>
                     </div>
 
+                    <!-- Campo: Descripción -->
                     <div class="form__group">
-                        <label for="userMessage" class="form__label">
-                            Tu mensaje
+                        <label for="taskDescription" class="form__label">
+                            Descripci&oacute;n
                         </label>
-                        <textarea 
-                            id="userMessage" 
-                            class="form__input form__textarea" 
-                            placeholder="Escribe tu mensaje aquí..."
-                            rows="4"
+                        <textarea
+                            id="taskDescription"
+                            class="form__input form__textarea"
+                            placeholder="Describe los detalles de la tarea..."
+                            rows="3"
                             aria-required="true"
+                            aria-describedby="taskDescError"
                         ></textarea>
-                        <span class="form__error" id="userMessageError"></span>
+                        <span class="form__error" id="taskDescError"></span>
                     </div>
 
-                    <button type="submit" class="btn btn--primary" id="submitBtn">
-                        <span class="btn__text">Agregar Mensaje</span>
-                        <span class="btn__icon">➤</span>
+                    <!-- Campo: Estado de la tarea (select) -->
+                    <div class="form__group">
+                        <label for="taskStatus" class="form__label">
+                            Estado
+                        </label>
+                        <div class="form__select-wrapper">
+                            <select
+                                id="taskStatus"
+                                class="form__input form__select"
+                                aria-required="true"
+                            >
+                                <option value="pendiente">Pendiente</option>
+                                <option value="en_progreso">En progreso</option>
+                                <option value="completada">Completada</option>
+                            </select>
+                            <span class="form__select-arrow">&#9660;</span>
+                        </div>
+                    </div>
+
+                    <!-- Botón para agregar tarea -->
+                    <button type="submit" class="btn btn--primary" id="addTaskBtn">
+                        <span class="btn__text">Agregar Tarea</span>
+                        <span class="btn__icon">+</span>
                     </button>
                 </form>
             </div>
         </section>
 
-        <!-- Área de mensajes -->
-        <section class="messages-section">
-            <div class="messages-header">
-                <h2 class="messages-header__title">Mensajes Publicados</h2>
-                <span class="messages-header__count" id="messageCount">0 mensajes</span>
+        <!-- ============================================
+             SECCIÓN 3: TABLA DE TAREAS
+             ============================================
+             Muestra todas las tareas registradas para el
+             usuario actual en una tabla dinámica. Las filas
+             se crean con createElement + appendChild desde
+             JavaScript (sin innerHTML directo).
+             ============================================ -->
+        <section id="tasksSection" class="tasks-section hidden" aria-label="Lista de tareas">
+            <div class="tasks-header">
+                <h2 class="tasks-header__title">Tareas Registradas</h2>
+                <span class="tasks-header__count" id="taskCount">0 tareas</span>
             </div>
-            
-            <div id="messagesContainer" class="messages-container">
-                <!-- Los mensajes se agregarán aquí dinámicamente -->
-                <div class="messages-empty" id="emptyState">
-                    <svg class="messages-empty__icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <p class="messages-empty__text">Aún no hay mensajes</p>
-                    <p class="messages-empty__subtext">Completa el formulario para agregar tu primer mensaje</p>
-                </div>
+
+            <!--
+              Tabla de tareas:
+              - <thead> con los encabezados fijos
+              - <tbody> se llena dinámicamente desde JS
+              - Cada fila contiene: #, Título, Descripción, Estado
+            -->
+            <div class="table-wrapper">
+                <table class="tasks-table" id="tasksTable">
+                    <thead class="tasks-table__head">
+                        <tr>
+                            <th>#</th>
+                            <th>T&iacute;tulo</th>
+                            <th>Descripci&oacute;n</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tasks-table__body" id="tasksBody">
+                        <!--
+                          Las filas se insertan aquí desde
+                          JavaScript con createElement()
+                        -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!--
+              Mensaje cuando no hay tareas:
+              Se muestra cuando el contenedor está vacío
+              y se oculta al agregar la primera tarea
+            -->
+            <div id="tasksEmpty" class="tasks-empty">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                    <rect x="9" y="3" width="6" height="4" rx="1"/>
+                    <line x1="9" y1="12" x2="15" y2="12"/>
+                    <line x1="9" y1="16" x2="13" y2="16"/>
+                </svg>
+                <p>A&uacute;n no hay tareas registradas</p>
             </div>
         </section>
 
-        <!-- Footer informativo -->
+        <!-- ============================================
+             FOOTER
+             ============================================ -->
         <footer class="footer">
-            <p class="footer__text">Ejercicio de manipulación del DOM | SENA - Desarrollo Web</p>
+            <p class="footer__text">
+                Ejercicio de manipulaci&oacute;n del DOM | SENA - Desarrollo Web
+            </p>
         </footer>
     </div>
 
+    <!--
+      Carga del script:
+      - Se coloca al final del <body> para asegurar que
+        todos los elementos del DOM ya existen cuando
+        el script se ejecuta.
+      - No usa type="module" porque es un script clásico
+        que manipula el DOM directamente.
+    -->
     <script src="script.js"></script>
 </body>
 </html>
