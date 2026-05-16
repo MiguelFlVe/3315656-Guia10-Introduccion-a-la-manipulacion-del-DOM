@@ -23,7 +23,7 @@ const STORAGE_KEYS = {
     TASKS: "taskManagerTasks"
 };
 
-const apiUrl = 'http://10.5.225.181:3050/';
+const apiUrl = 'http://192.168.0.13:5500/';
 
 const userSearchForm = document.getElementById("userSearchForm");
 const userDocumentInput = document.getElementById("userDocument");
@@ -51,18 +51,7 @@ const tasksTableBody = document.getElementById("tasksTableBody");
 const tasksEmptyState = document.getElementById("tasksEmptyState");
 
 // Usuarios y tareas de respaldo cuando el backend no está disponible.
-const FALLBACK_USERS = [
-    { id: "1", name: "Ana Torres", email: "ana.torres@mail.com" },
-    { id: "2", name: "Carlos Gómez", email: "carlos.gomez@mail.com" },
-    { id: "3", name: "María López", email: "maria.lopez@mail.com" },
-    { id: "4", name: "Juan Pérez", email: "juan.perez@mail.com" },
-    { id: "5", name: "Laura Martínez", email: "laura.martinez@mail.com" },
-    { id: "6", name: "Pedro Sánchez", email: "pedro.sanchez@mail.com" },
-    { id: "7", name: "Sofía Ramírez", email: "sofia.ramirez@mail.com" },
-    { id: "8", name: "Andrés Morales", email: "andres.morales@mail.com" },
-    { id: "9", name: "Valentina Cruz", email: "valentina.cruz@mail.com" },
-    { id: "10", name: "Diego Herrera", email: "diego.herrera@mail.com" }
-];
+const FALLBACK_USERS = [];
 
 const FALLBACK_TASKS = [];
 
@@ -106,9 +95,13 @@ async function loadLocalData() {
                 userId: normalizeId(task.userId)
             }));
     } catch (error) {
-        console.warn("No se pudo cargar datos desde el backend, usando datos locales de respaldo", error);
-        dbUsers = [...FALLBACK_USERS];
-        dbTasks = [...FALLBACK_TASKS];
+        console.warn("No se pudo cargar datos desde el backend, intentando cargar datos locales de repo", error);
+        const loadedFromRepo = await loadFallbackData();
+
+        if (!loadedFromRepo) {
+            dbUsers = [...FALLBACK_USERS];
+            dbTasks = [...FALLBACK_TASKS];
+        }
     }
 
     const storedTasks = loadSavedTasks();
@@ -117,6 +110,35 @@ async function loadLocalData() {
             ...dbTasks,
             ...storedTasks.filter(task => !dbTasks.some(local => normalizeId(local.id) === normalizeId(task.id)))
         ];
+    }
+}
+
+async function loadFallbackData() {
+    try {
+        const response = await fetch("../Server/db.json");
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const fallbackUsers = Array.isArray(data.users) ? data.users : [];
+        const fallbackTasks = Array.isArray(data.tasks) ? data.tasks : [];
+
+        dbUsers = fallbackUsers.map(user => ({
+            ...user,
+            id: normalizeId(user.id)
+        }));
+
+        dbTasks = fallbackTasks.map(task => ({
+            ...task,
+            id: normalizeId(task.id),
+            userId: normalizeId(task.userId)
+        }));
+
+        return true;
+    } catch (error) {
+        console.warn("No se pudo cargar datos desde Server/db.json", error);
+        return false;
     }
 }
 
@@ -404,12 +426,29 @@ function addTaskToTable(task) {
     const user = dbUsers.find(u => normalizeId(u.id) === normalizeId(task.userId));
     const userName = user ? user.name : `Usuario ${normalizeId(task.userId)}`;
 
-    row.innerHTML = `
-        <td class="tasks__cell">${escapeHtml(task.title)}</td>
-        <td class="tasks__cell">${escapeHtml(task.description)}</td>
-        <td class="tasks__cell"><span class="task-status task-status--${statusClass}">${getStatusText(task.status)}</span></td>
-        <td class="tasks__cell">${escapeHtml(userName)}</td>
-    `;
+    const titleCell = document.createElement("td");
+    titleCell.classList.add("tasks__cell");
+    titleCell.textContent = task.title;
+
+    const descriptionCell = document.createElement("td");
+    descriptionCell.classList.add("tasks__cell");
+    descriptionCell.textContent = task.description;
+
+    const statusCell = document.createElement("td");
+    statusCell.classList.add("tasks__cell");
+    const statusBadge = document.createElement("span");
+    statusBadge.classList.add("task-status", `task-status--${statusClass}`);
+    statusBadge.textContent = getStatusText(task.status);
+    statusCell.appendChild(statusBadge);
+
+    const userCell = document.createElement("td");
+    userCell.classList.add("tasks__cell");
+    userCell.textContent = userName;
+
+    row.appendChild(titleCell);
+    row.appendChild(descriptionCell);
+    row.appendChild(statusCell);
+    row.appendChild(userCell);
 
     tasksTableBody.appendChild(row);
 }
